@@ -17,7 +17,12 @@
     "skipLibCheck": true,                     
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@shared/*": ["./src/shared/*"],
+      "@entities/*": ["./src/entities/*"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@useCases/*": ["./src/useCases/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

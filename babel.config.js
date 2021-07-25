@@ -13,6 +13,10 @@ module.exports = {
   plugins: [
     ['module-resolver', {
       alias: {
+        "@shared/*": ["./src/shared/*"],
+        "@entities/*": ["./src/entities/*"],
+        "@repositories/*": ["./src/repositories/*"],
+        "@useCases/*": ["./src/useCases/*"]
         // insert the same tsconfig.json paths
       }
     }]
