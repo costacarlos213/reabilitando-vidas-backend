@@ -1,14 +1,10 @@
 import { Router } from "express"
-import { CPF } from "./entities/User/CPF"
+import { createUserController } from "./main/createUser"
 
 const router = Router()
 
-router.get("/", async (req, res) => {
-  const cpf = CPF.create("436.616.758-18")
-
-  res.json({
-    formatedNumber: cpf
-  })
+router.post("/user", async (req, res) => {
+  return (await createUserController).handler(req, res)
 })
 
 export { router }

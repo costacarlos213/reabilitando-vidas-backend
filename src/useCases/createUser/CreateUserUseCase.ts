@@ -1,4 +1,4 @@
-import { left } from "@shared/either"
+import { left, right } from "@shared/either"
 import { User } from "@entities/User/User"
 import { ICreateUserDTO } from "./ICreateUserDTO"
 import { IUserRepository } from "@repositories/userRepository/IUserRepository"
@@ -9,21 +9,21 @@ import bcrypt from "bcrypt"
 class CreateUserUseCase {
   constructor(private userRepository: IUserRepository) {}
 
-  async execute(data: ICreateUserDTO): Promise<CreateUserResponse> {
-    let password: string = data.password
+  async execute(userData: ICreateUserDTO): Promise<CreateUserResponse> {
+    let password: string = userData.password
 
     if (!password) {
-      password = data.CPF
+      password = userData.CPF
     }
 
     if (password.trim().length === 0) {
-      const cleanString = data.CPF.replace(/[\s.-]/g, "")
+      const cleanString = userData.CPF.replace(/[\s.-]/g, "")
       password = cleanString
     }
 
     const hashPassword = await bcrypt.hash(password, 8)
 
-    const { email, phone, CPF, name, staff } = data
+    const { email, phone, CPF, name, staff } = userData
 
     const userOrError = User.create({
       CPF,
@@ -49,6 +49,8 @@ class CreateUserUseCase {
       })
 
     if (savedOrError.isLeft()) return left(savedOrError.value)
+
+    return right(null)
   }
 }
 

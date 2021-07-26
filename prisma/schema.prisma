@@ -18,6 +18,7 @@ model User {
   password     String
   cpf          String        @unique
   staff        Boolean       @default(false)
+  firstLogin   Boolean       @default(true)
   appointments Appointment[]
 }
 

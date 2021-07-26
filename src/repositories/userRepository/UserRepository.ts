@@ -1,11 +1,9 @@
 import { User } from "@entities/User/User"
 import { IUser } from "@entities/User/IUser"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "../../database/client"
 import { CreateUserRepositoryResponse } from "./createUserRepositoryResponse"
 import { left, right } from "@shared/either"
 import { UserAlreadyExistsError } from "@useCases/errors/UserAlreadyExistsError"
-
-const prisma = new PrismaClient()
 
 class UserRepository {
   async findUser(
