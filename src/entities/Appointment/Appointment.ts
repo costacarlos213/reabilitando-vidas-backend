@@ -1,7 +1,5 @@
-import { Either, left, right } from "@shared/either"
-import { InvalidDateTimeError } from "../errors/invalidDateTime"
 import { User } from "../User/User"
-import { IAppointmentDTO } from "./IAppointmentDTO"
+import { IAppointment } from "./IAppointment"
 import { Timestamp } from "./Timestamp"
 
 class Appointment {
@@ -11,16 +9,14 @@ class Appointment {
     public readonly Confirmed: boolean = false
   ) {}
 
-  static create(
-    appointmentData: IAppointmentDTO
-  ): Either<InvalidDateTimeError, Appointment> {
+  static create(appointmentData: IAppointment): Appointment {
     const timestampOrError = Timestamp.create(appointmentData.timestamp)
 
-    if (timestampOrError.isLeft()) return left(timestampOrError.value)
+    if (timestampOrError.isLeft()) throw timestampOrError.value
 
     const timestamp = timestampOrError.value
 
-    return right(new Appointment(appointmentData.user, timestamp))
+    return new Appointment(appointmentData.user, timestamp)
   }
 }
 

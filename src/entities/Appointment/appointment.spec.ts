@@ -1,34 +1,34 @@
+import dayjs from "dayjs"
 import { User } from "../User/User"
 import { Appointment } from "./Appointment"
+import CustomParseFormat from "dayjs/plugin/customParseFormat"
+
+dayjs.extend(CustomParseFormat)
 
 describe("Appointment create test", () => {
-  const userOrError = User.create({
-    CPF: "18505342844",
+  const user = User.create({
+    cpf: "18505342844",
     name: "Carlos Jimmy",
     email: "carlos@jimmt.com",
     phone: "11945508106",
     password: "carlitos13"
   })
 
-  if (userOrError.isLeft()) return false
-
-  const user: User = userOrError.value
-
   test("New Simple Appointment", () => {
-    const appointmentOrError = Appointment.create({
+    const appointment = Appointment.create({
       user: user,
-      timestamp: "26/08/2021"
+      timestamp: dayjs("26/08/2021", "DD/MM/YYYY").unix()
     })
 
-    expect(appointmentOrError.isRight()).toBeTruthy()
+    expect(appointment).toBeInstanceOf(Appointment)
   })
 
   test("Appointment dated before today", () => {
-    const appointmentOrError = Appointment.create({
-      user: user,
-      timestamp: "26-04-2021"
-    })
-
-    expect(appointmentOrError.isLeft()).toBeTruthy()
+    expect(() => {
+      Appointment.create({
+        user: user,
+        timestamp: dayjs("26-04-2021", "DD-MM-YYYY").unix()
+      })
+    }).toThrowError()
   })
 })

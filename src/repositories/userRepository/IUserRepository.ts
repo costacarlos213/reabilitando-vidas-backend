@@ -1,6 +1,6 @@
-import { IUser } from "../../entities/User/IUser"
+import { User } from "@entities/User/User"
 
 export interface IUserRepository {
-  findUser(email: string | null, phone: string | null)
-  save(user: IUser)
+  getUserByCPF(requestedCpf: string): Promise<User>
+  save(user: User): Promise<void>
 }

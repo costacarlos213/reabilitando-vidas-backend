@@ -1,3 +1,0 @@
-class CreateUserController {}
-
-export { CreateUserController }

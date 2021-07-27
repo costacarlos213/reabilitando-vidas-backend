@@ -1,8 +1,9 @@
 export interface IUser {
-  CPF: string
+  id?: string
+  cpf: string
   name: string
   email: string
   phone: string
   staff?: boolean
-  password: string
+  password?: string
 }

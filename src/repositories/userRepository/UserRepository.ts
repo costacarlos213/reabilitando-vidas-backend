@@ -1,39 +1,64 @@
 import { User } from "@entities/User/User"
-import { IUser } from "@entities/User/IUser"
 import { prisma } from "../../database/client"
-import { CreateUserRepositoryResponse } from "./createUserRepositoryResponse"
-import { left, right } from "@shared/either"
 import { UserAlreadyExistsError } from "@useCases/errors/UserAlreadyExistsError"
+import { IUserRepository } from "./IUserRepository"
+import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
 
-class UserRepository {
-  async findUser(
-    email: string | undefined,
-    phone: string | undefined
-  ): Promise<boolean> {
-    return true
-  }
-
-  async save(user: IUser): Promise<CreateUserRepositoryResponse> {
-    const { CPF, email, phone, name, password, staff } = user
-
-    const userAlreadyExists = await this.userAlreadyExists(CPF, email, phone)
-
-    if (userAlreadyExists) {
-      return left(new UserAlreadyExistsError())
-    }
-
-    await prisma.user.create({
-      data: {
-        name,
-        cpf: CPF,
-        password,
-        email,
-        phone,
-        staff
+class UserRepository implements IUserRepository {
+  async getUserByCPF(requestedCpf: string): Promise<User> {
+    const databaseStoredUser = await prisma.user.findUnique({
+      where: {
+        cpf: requestedCpf
+      },
+      select: {
+        id: true,
+        name: true,
+        cpf: true,
+        email: true,
+        phone: true
       }
     })
 
-    return right(null)
+    if (!databaseStoredUser) throw new UserDoNotExistsError()
+
+    const user = User.create({
+      id: databaseStoredUser.id,
+      cpf: databaseStoredUser.cpf,
+      email: databaseStoredUser.email,
+      name: databaseStoredUser.name,
+      phone: databaseStoredUser.phone
+    })
+
+    return user
+  }
+
+  async save(user: User): Promise<void> {
+    const { cpf, Email, Phone, Name, Password, Staff } = user
+
+    try {
+      const userAlreadyExists = await this.userAlreadyExists(
+        cpf.value,
+        Email.value,
+        Phone.value
+      )
+
+      if (userAlreadyExists) throw new UserAlreadyExistsError()
+
+      await prisma.user.create({
+        data: {
+          cpf: cpf.value,
+          name: Name.value,
+          password: Password,
+          email: Email.value,
+          phone: Phone.value,
+          staff: Staff
+        }
+      })
+
+      return null
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   async userAlreadyExists(

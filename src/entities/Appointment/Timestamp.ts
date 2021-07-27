@@ -1,56 +1,26 @@
 import { Either, left, right } from "@shared/either"
-
 import dayjs from "dayjs"
-import customParseFormat from "dayjs/plugin/customParseFormat"
 import { InvalidDateTimeError } from "../errors/invalidDateTime"
 
-dayjs.extend(customParseFormat)
-
 class Timestamp {
-  private constructor(private readonly _timestamp: string | number) {}
+  private constructor(private readonly _timestamp: number) {}
 
-  static create(
-    time: string | number
-  ): Either<InvalidDateTimeError, Timestamp> {
-    const isValid = this.validate(time)
+  static create(timestamp: number): Either<InvalidDateTimeError, Timestamp> {
+    const isValid = this.validate(timestamp)
 
-    if (!isValid) return left(new InvalidDateTimeError(time.toString()))
+    if (!isValid) return left(new InvalidDateTimeError(timestamp.toString()))
 
-    return right(new Timestamp(time))
+    return right(new Timestamp(timestamp))
   }
 
-  get value(): string | number {
+  get value(): number {
     return this._timestamp
   }
 
-  private static validate(time: string | number): boolean {
-    let date
-    const validFormats = [
-      "DD/MM/YYYY",
-      "DD-MM-YYYY",
-      "D-MM-YYYY",
-      "DD-M-YYYY",
-      "DD-MM-YY",
-      "DD-M-YY",
-      "D-MM-YY",
-      "D/MM/YYYY",
-      "DD/M/YYYY",
-      "DD/MM/YY",
-      "DD/M/YY",
-      "D/MM/YY"
-    ]
+  private static validate(timestamp: number): boolean {
+    const dayJSTimeStamp = dayjs.unix(timestamp)
 
-    if (typeof time === "number") {
-      date = dayjs.unix(time)
-    } else {
-      date = time
-    }
-
-    const isDateValid = dayjs(date, validFormats, true).isValid()
-
-    if (!isDateValid) return false
-
-    const isDateBeforeNow = dayjs(date, validFormats).isBefore(dayjs())
+    const isDateBeforeNow = dayJSTimeStamp.isBefore(dayjs())
 
     if (isDateBeforeNow) return false
 
