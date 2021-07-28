@@ -1,7 +1,7 @@
 import { Appointment } from "@entities/Appointment/Appointment"
-import { IAppointmentRepository } from "@repositories/appointmentRepository/IAppointmentRepository"
-import { IUserRepository } from "@repositories/userRepository/IUserRepository"
-import { ICreateAppointmentDTO } from "./ICreateAppointmentDTO"
+import { IAppointmentRepository } from "@repositories/appointmentRepository/AppointmentRepository"
+import { IUserRepository } from "@repositories/userRepository/UserRepository"
+import { ICreateAppointmentDTO } from "./CreateAppointmentDTO"
 
 class CreateAppointmentUseCase {
   constructor(

@@ -1,5 +1,5 @@
 import { ICreateUserDTO } from "./ICreateUserDTO"
-import { UserRepository } from "../../repositories/userRepository/UserRepository"
+import { UserRepository } from "../../repositories/userRepository/implementation/UserRepository"
 import { CreateUserUseCase } from "./CreateUserUseCase"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcrypt"

@@ -13,9 +13,9 @@ class CreateUserController {
 
       console.log(createUserResponse)
 
-      if (createUserResponse.isLeft()) {
+      if (createUserResponse instanceof Error) {
         return res.status(400).json({
-          message: createUserResponse.value
+          message: createUserResponse.message
         })
       }
 

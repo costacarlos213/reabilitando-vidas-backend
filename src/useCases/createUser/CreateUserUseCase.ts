@@ -1,6 +1,6 @@
 import { User } from "@entities/User/User"
 import { ICreateUserDTO } from "./ICreateUserDTO"
-import { IUserRepository } from "@repositories/userRepository/IUserRepository"
+import { IUserRepository } from "@repositories/userRepository/UserRepository"
 import bcrypt from "bcrypt"
 
 class CreateUserUseCase {
