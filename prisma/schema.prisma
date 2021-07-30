@@ -24,7 +24,7 @@ model User {
 
 model Appointment {
   id        Int     @id @default(autoincrement())
-  timestamp Int
+  dateTime  String
   confirmed Boolean @default(false)
   userId    String
   user      User    @relation(fields: [userId], references: [id])

@@ -17,7 +17,7 @@ describe("Appointment create test", () => {
   test("New Simple Appointment", () => {
     const appointment = Appointment.create({
       user: user,
-      timestamp: dayjs("26/08/2021", "DD/MM/YYYY").unix()
+      dateTime: dayjs("26/08/2021", "DD/MM/YYYY").toISOString()
     })
 
     expect(appointment).toBeInstanceOf(Appointment)
@@ -27,7 +27,7 @@ describe("Appointment create test", () => {
     expect(() => {
       Appointment.create({
         user: user,
-        timestamp: dayjs("26-04-2021", "DD-MM-YYYY").unix()
+        dateTime: dayjs("26-04-2021", "DD-MM-YYYY").toString()
       })
     }).toThrowError()
   })

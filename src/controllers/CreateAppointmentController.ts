@@ -5,13 +5,13 @@ class CreateAppointmentController {
   constructor(private createAppointmentUseCase: CreateAppointmentUseCase) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
-    const { cpf, timestamp } = req.body
+    const { cpf, dateTime } = req.body
 
     try {
       const AppointmentUseCaseResponse =
         await this.createAppointmentUseCase.execute({
           cpf,
-          timestamp
+          dateTime
         })
 
       if (AppointmentUseCaseResponse instanceof Error) {

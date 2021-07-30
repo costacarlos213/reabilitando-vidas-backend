@@ -10,14 +10,14 @@ class CreateAppointmentUseCase {
   ) {}
 
   async execute(appointmentData: ICreateAppointmentDTO): Promise<Error | void> {
-    const { cpf, timestamp } = appointmentData
+    const { cpf, dateTime } = appointmentData
 
     try {
       const user = await this.createUserRepository.getUserByCPF(cpf)
 
       const appointment = Appointment.create({
         user,
-        timestamp
+        dateTime
       })
 
       await this.createAppointmentRepository.save(appointment)

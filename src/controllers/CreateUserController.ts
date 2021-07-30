@@ -11,8 +11,6 @@ class CreateUserController {
     try {
       const createUserResponse = await this.createUserUseCase.execute(userData)
 
-      console.log(createUserResponse)
-
       if (createUserResponse instanceof Error) {
         return res.status(400).json({
           message: createUserResponse.message

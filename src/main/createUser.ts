@@ -2,7 +2,7 @@ import { UserRepository } from "@repositories/userRepository/implementation/User
 import { CreateUserUseCase } from "@useCases/createUser/CreateUserUseCase"
 import { CreateUserController } from "src/controllers/CreateUserController"
 
-async function CreateUserControllerFactory() {
+function CreateUserControllerFactory() {
   const userRepository = new UserRepository()
 
   const createUserUseCase = new CreateUserUseCase(userRepository)

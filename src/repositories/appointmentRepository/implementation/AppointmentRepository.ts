@@ -1,22 +1,48 @@
 import { Appointment } from "@entities/Appointment/Appointment"
-import { User } from "@entities/User/User"
+import dayjs from "dayjs"
 import { prisma } from "../../../database/client"
-import { IAppointmentRepository } from "../AppointmentRepository"
+import {
+  dayAppointments,
+  IAppointmentRepository
+} from "../AppointmentRepository"
 
 class AppointmentRepository implements IAppointmentRepository {
-  async save(appointment: Appointment): Promise<void> {
-    const { User, Timestamp } = appointment
+  async getDayAppointments(dateTime: string): Promise<dayAppointments[]> {
+    const databaseStoredAppointments = await prisma.appointment.findMany({
+      where: {
+        dateTime: {
+          gte: dayjs(dateTime).toISOString(),
+          lt: dayjs(dateTime).add(1, "day").toISOString()
+        }
+      },
+      include: {
+        user: {
+          select: {
+            cpf: true,
+            email: true,
+            name: true,
+            phone: true
+          }
+        }
+      }
+    })
 
-    const sameTimestampAppointment = await this.getAppointmentByTimestamp(
-      Timestamp.value
+    return databaseStoredAppointments
+  }
+
+  async save(appointment: Appointment): Promise<void> {
+    const { User, Datetime } = appointment
+
+    const appointmentAlreadyExists = await this.appointmentAlreadyExists(
+      Datetime.value
     )
 
-    if (sameTimestampAppointment)
+    if (appointmentAlreadyExists)
       throw new Error("There are 2 appointments at the same time")
 
     await prisma.appointment.create({
       data: {
-        timestamp: Timestamp.value,
+        dateTime: Datetime.value,
         userId: User.id
       }
     })
@@ -24,12 +50,10 @@ class AppointmentRepository implements IAppointmentRepository {
     return null
   }
 
-  async getAppointmentByTimestamp(
-    timestamp: number
-  ): Promise<Appointment | null> {
+  async appointmentAlreadyExists(dateTime: string): Promise<boolean> {
     const databaseStoredAppointment = await prisma.appointment.findFirst({
       where: {
-        timestamp
+        dateTime
       },
       include: {
         user: true
@@ -37,23 +61,10 @@ class AppointmentRepository implements IAppointmentRepository {
     })
 
     if (!databaseStoredAppointment) {
-      return
+      return false
     }
 
-    const user = User.create({
-      id: databaseStoredAppointment.userId,
-      email: databaseStoredAppointment.user.email,
-      cpf: databaseStoredAppointment.user.cpf,
-      name: databaseStoredAppointment.user.cpf,
-      phone: databaseStoredAppointment.user.phone
-    })
-
-    const appointment = Appointment.create({
-      user: user,
-      timestamp: databaseStoredAppointment.timestamp
-    })
-
-    return appointment
+    return true
   }
 }
 

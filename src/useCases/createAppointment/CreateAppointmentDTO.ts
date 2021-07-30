@@ -1,4 +1,4 @@
 export interface ICreateAppointmentDTO {
-  timestamp: number
+  dateTime: string
   cpf: string
 }

@@ -2,8 +2,6 @@
 
 ## **Overview**
 
-<br />
-
 **1. About the project**
 
 This repository is destined to the system development course's final paper backend.
@@ -33,6 +31,7 @@ A aplicação é destinada a clínica de fisioterapia "Reabilitando Vidas". A cl
 - [x] User creation
 - [x] Appointment creation
 - [ ] Appointment index
+- [x] Add filters
 - [ ] JWT auth
 - [ ] Refresh Token
 - [ ] Password reset

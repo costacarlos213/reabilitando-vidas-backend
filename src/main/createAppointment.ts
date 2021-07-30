@@ -3,7 +3,7 @@ import { UserRepository } from "@repositories/userRepository/implementation/User
 import { CreateAppointmentUseCase } from "@useCases/createAppointment/CreateAppointmentUseCase"
 import { CreateAppointmentController } from "src/controllers/CreateAppointmentController"
 
-async function CreateAppointmentControllerFactory() {
+function CreateAppointmentControllerFactory() {
   const appointmentRepository = new AppointmentRepository()
   const userRepository = new UserRepository()
 

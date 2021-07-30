@@ -1,22 +1,22 @@
 import { User } from "../User/User"
 import { IAppointment } from "./IAppointment"
-import { Timestamp } from "./Timestamp"
+import { DateTime } from "./Datetime"
 
 class Appointment {
   private constructor(
     public readonly User: User,
-    public readonly Timestamp: Timestamp,
+    public readonly Datetime: DateTime,
     public readonly Confirmed: boolean = false
   ) {}
 
   static create(appointmentData: IAppointment): Appointment {
-    const timestampOrError = Timestamp.create(appointmentData.timestamp)
+    const datetimeOrError = DateTime.create(appointmentData.dateTime)
 
-    if (timestampOrError.isLeft()) throw timestampOrError.value
+    if (datetimeOrError.isLeft()) throw datetimeOrError.value
 
-    const timestamp = timestampOrError.value
+    const datetime = datetimeOrError.value
 
-    return new Appointment(appointmentData.user, timestamp)
+    return new Appointment(appointmentData.user, datetime)
   }
 }
 
