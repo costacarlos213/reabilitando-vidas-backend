@@ -1,19 +1,12 @@
-import { GetAppointmentByDateUseCase } from "@useCases/getAppointmentByDateTime/GetAppointmentByDateUseCase"
+import { IndexAppointmentsUseCase } from "@useCases/IndexAppointments/IndexAppointmentsUseCase"
 import { Request, Response } from "express"
 
-class GetAppointmentByDateController {
-  constructor(
-    private getAppointmentByDateUseCase: GetAppointmentByDateUseCase
-  ) {}
+class IndexAppointmentsController {
+  constructor(private indexAppointmentsUseCase: IndexAppointmentsUseCase) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
-    const { initialDate, finalDate } = req.body
-
     try {
-      const appointments = await this.getAppointmentByDateUseCase.execute({
-        initialDate,
-        finalDate
-      })
+      const appointments = await this.indexAppointmentsUseCase.execute()
 
       if (appointments instanceof Error) {
         return res.status(400).json({
@@ -33,4 +26,4 @@ class GetAppointmentByDateController {
   }
 }
 
-export { GetAppointmentByDateController }
+export { IndexAppointmentsController }

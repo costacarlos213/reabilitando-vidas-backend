@@ -1,5 +1,5 @@
 import { CreateUserUseCase } from "@useCases/createUser/CreateUserUseCase"
-import { ICreateUserDTO } from "@useCases/createUser/ICreateUserDTO"
+import { ICreateUserDTO } from "@useCases/createUser/CreateUserDTO"
 import { Request, Response } from "express"
 
 class CreateUserController {

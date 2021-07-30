@@ -1,4 +1,4 @@
-import { ICreateUserDTO } from "./ICreateUserDTO"
+import { ICreateUserDTO } from "./CreateUserDTO"
 import { UserRepository } from "../../repositories/userRepository/implementation/UserRepository"
 import { CreateUserUseCase } from "./CreateUserUseCase"
 import { PrismaClient } from "@prisma/client"

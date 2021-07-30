@@ -1,5 +1,5 @@
 import { User } from "@entities/User/User"
-import { ICreateUserDTO } from "./ICreateUserDTO"
+import { ICreateUserDTO } from "./CreateUserDTO"
 import { IUserRepository } from "@repositories/userRepository/UserRepository"
 import bcrypt from "bcrypt"
 

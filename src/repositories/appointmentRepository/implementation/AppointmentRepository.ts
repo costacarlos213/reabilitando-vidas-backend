@@ -1,18 +1,27 @@
 import { Appointment } from "@entities/Appointment/Appointment"
-import dayjs from "dayjs"
 import { prisma } from "../../../database/client"
+import { Appointment as dbAppointment } from "@prisma/client"
 import {
   dayAppointments,
   IAppointmentRepository
 } from "../AppointmentRepository"
 
 class AppointmentRepository implements IAppointmentRepository {
-  async getDayAppointments(dateTime: string): Promise<dayAppointments[]> {
+  async indexAppointments(): Promise<dbAppointment[]> {
+    const appointments = await prisma.appointment.findMany()
+
+    return appointments
+  }
+
+  async getDayAppointments(
+    initialDateTime: string,
+    finalDateTime: string
+  ): Promise<dayAppointments[]> {
     const databaseStoredAppointments = await prisma.appointment.findMany({
       where: {
         dateTime: {
-          gte: dayjs(dateTime).toISOString(),
-          lt: dayjs(dateTime).add(1, "day").toISOString()
+          gte: initialDateTime,
+          lt: finalDateTime
         }
       },
       include: {
@@ -50,7 +59,7 @@ class AppointmentRepository implements IAppointmentRepository {
     return null
   }
 
-  async appointmentAlreadyExists(dateTime: string): Promise<boolean> {
+  private async appointmentAlreadyExists(dateTime: string): Promise<boolean> {
     const databaseStoredAppointment = await prisma.appointment.findFirst({
       where: {
         dateTime
