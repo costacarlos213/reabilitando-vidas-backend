@@ -32,10 +32,6 @@ export class User {
   }
 
   static create(userData: IUser): User {
-    if (userData.email.length === 0 && userData.phone.length === 0) {
-      throw new InvalidContactOptionError()
-    }
-
     if (!userData.email && !userData.phone) {
       throw new InvalidContactOptionError()
     }

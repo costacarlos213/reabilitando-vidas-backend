@@ -1,10 +1,32 @@
 import { User } from "@entities/User/User"
 import { prisma } from "../../../database/client"
 import { UserAlreadyExistsError } from "@useCases/errors/UserAlreadyExistsError"
-import { IUserRepository } from "../UserRepository"
+import { IUserRepository, logedUser } from "../UserRepository"
 import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
 
 class UserRepository implements IUserRepository {
+  async getUserByLoginOptions(login: string): Promise<logedUser> {
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            email: login
+          },
+          {
+            phone: login
+          }
+        ]
+      },
+      select: {
+        password: true,
+        id: true,
+        cpf: true
+      }
+    })
+
+    return user
+  }
+
   async getUserByCPF(requestedCpf: string): Promise<User> {
     const databaseStoredUser = await prisma.user.findUnique({
       where: {
@@ -61,7 +83,7 @@ class UserRepository implements IUserRepository {
     }
   }
 
-  async userAlreadyExists(
+  private async userAlreadyExists(
     cpf: string,
     email: string,
     phone: string

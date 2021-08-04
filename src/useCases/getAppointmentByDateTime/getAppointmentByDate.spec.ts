@@ -11,6 +11,23 @@ describe("Get Appoint by date test", () => {
   const appointmentUseCase = new GetAppointmentByDateUseCase(appointmentRepo)
 
   beforeAll(async () => {
+    await prisma.appointment.deleteMany({
+      where: {
+        confirmed: false
+      }
+    })
+
+    await prisma.user.create({
+      data: {
+        id: "1",
+        name: "Test User",
+        cpf: "12782234013",
+        password: "carlitos13",
+        email: "email@email.com",
+        phone: "11123456789"
+      }
+    })
+
     await prisma.appointment.createMany({
       data: [
         {
@@ -40,10 +57,13 @@ describe("Get Appoint by date test", () => {
   afterAll(async () => {
     await prisma.appointment.deleteMany({
       where: {
-        dateTime: {
-          gte: dayjs("16/02/2022", "DD/MM/YYYY").format(),
-          lt: dayjs("16/02/2022", "DD/MM/YYYY").add(1, "day").format()
-        }
+        confirmed: false
+      }
+    })
+
+    await prisma.user.delete({
+      where: {
+        id: "1"
       }
     })
   })

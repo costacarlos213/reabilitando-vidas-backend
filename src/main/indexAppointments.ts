@@ -1,5 +1,5 @@
 import { AppointmentRepository } from "@repositories/appointmentRepository/implementation/AppointmentRepository"
-import { IndexAppointmentsUseCase } from "@useCases/IndexAppointments/IndexAppointmentsUseCase"
+import { IndexAppointmentsUseCase } from "@useCases/indexAppointments/IndexAppointmentsUseCase"
 import { IndexAppointmentsController } from "src/controllers/IndexAppointmentsController"
 
 function IndexAppointmentsControllerFactory() {

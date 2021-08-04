@@ -17,6 +17,40 @@ describe("Create user use case tests", () => {
     })
   })
 
+  test("Create User only with phone", async () => {
+    const options: ICreateUserDTO = {
+      cpf: "74482034010",
+      name: "Carlos Costa",
+      phone: "12943221953",
+      password: "el di"
+    }
+
+    const executeUseCase = async () => {
+      return await userUseCase.execute(options)
+    }
+
+    const response = await executeUseCase()
+
+    return expect(response).toBeNull()
+  })
+
+  test("Create User only with email", async () => {
+    const options: ICreateUserDTO = {
+      cpf: "74482034010",
+      name: "Carlos Costa",
+      email: "carloscosta2912@gmail.com",
+      password: "el di"
+    }
+
+    const executeUseCase = async () => {
+      return await userUseCase.execute(options)
+    }
+
+    const response = await executeUseCase()
+
+    return expect(response).toBeNull()
+  })
+
   test("New User", async () => {
     const options: ICreateUserDTO = {
       cpf: "74482034010",

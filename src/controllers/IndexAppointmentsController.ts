@@ -1,4 +1,4 @@
-import { IndexAppointmentsUseCase } from "@useCases/IndexAppointments/IndexAppointmentsUseCase"
+import { IndexAppointmentsUseCase } from "@useCases/indexAppointments/IndexAppointmentsUseCase"
 import { Request, Response } from "express"
 
 class IndexAppointmentsController {

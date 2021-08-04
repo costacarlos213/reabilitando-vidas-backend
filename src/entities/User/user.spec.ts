@@ -23,7 +23,7 @@ describe("User Domain Entity", () => {
     const user = User.create({
       cpf: "733.879.140-67",
       name: "James",
-      email: "",
+      email: undefined,
       phone: "945508106",
       password: "carlitos13"
     })
@@ -50,8 +50,8 @@ describe("User Domain Entity", () => {
       User.create({
         cpf: "733.879.140-67",
         name: "James Jimmy",
-        email: "",
-        phone: "",
+        email: undefined,
+        phone: undefined,
         password: "carlitos13"
       })
     }).toThrow()

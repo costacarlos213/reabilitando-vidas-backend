@@ -16,6 +16,25 @@ describe("Create appointment feature", () => {
   )
   const prisma = new PrismaClient()
 
+  beforeAll(async () => {
+    await prisma.appointment.deleteMany({
+      where: {
+        confirmed: false
+      }
+    })
+
+    await prisma.user.create({
+      data: {
+        id: "1",
+        name: "Test User",
+        cpf: "12782234013",
+        password: "carlitos13",
+        email: "email@email.com",
+        phone: "11999126923"
+      }
+    })
+  })
+
   afterEach(async () => {
     await prisma.appointment.deleteMany({
       where: {
@@ -24,10 +43,18 @@ describe("Create appointment feature", () => {
     })
   })
 
+  afterAll(async () => {
+    await prisma.user.delete({
+      where: {
+        id: "1"
+      }
+    })
+  })
+
   test("Create Simple Appointment", async () => {
     expect(
       await appointmentUseCase.execute({
-        cpf: "18505342844",
+        cpf: "12782234013",
         dateTime: dayjs("16/02/2022", "DD/MM/YYYY").format()
       })
     ).toBeNull()
@@ -36,7 +63,7 @@ describe("Create appointment feature", () => {
   test("Create appointment with date before today", async () => {
     await expect(
       appointmentUseCase.execute({
-        cpf: "18505342844",
+        cpf: "12782234013",
         dateTime: dayjs("16/02/2021", "DD/MM/YYYY").toISOString()
       })
     ).resolves.toThrowError()
@@ -52,7 +79,7 @@ describe("Create appointment feature", () => {
 
     await expect(
       appointmentUseCase.execute({
-        cpf: "18505342844",
+        cpf: "12782234013",
         dateTime: dayjs("16/02/2021", "DD/MM/YYYY").toISOString()
       })
     ).resolves.toThrowError()
