@@ -25,10 +25,15 @@ export function verifyToken(
     redis.get("BL_" + decoded.sub.toString(), (err, data) => {
       if (err) throw err
 
-      if (data === token)
-        return res
-          .status(401)
-          .json({ message: "Trying to login with blacklisted token" })
+      if (!data) {
+        next()
+      } else {
+        if (JSON.parse(data).token === token) {
+          return res
+            .status(401)
+            .json({ message: "Trying to login with blacklisted token" })
+        }
+      }
 
       next()
     })

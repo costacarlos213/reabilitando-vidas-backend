@@ -1,8 +1,8 @@
 import { IUserRepository } from "@repositories/userRepository/UserRepository"
-import { ILoginUserDTO, ILoginUserResponse } from "./LoginUserDTO"
 import { compare } from "bcrypt"
 import { generateAccessToken } from "../../providers/generateAccessToken"
 import { generateRefreshToken } from "../../providers/generateRefreshToken"
+import { ILoginUserDTO, ILoginUserResponse } from "./LoginUserDTO"
 
 class LoginUserUseCase {
   constructor(private userRepository: IUserRepository) {}

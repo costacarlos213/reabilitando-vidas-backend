@@ -7,16 +7,17 @@ export function verifyRefreshToken(
   res: Response,
   next: NextFunction
 ): void | Response {
-  const token = req.body.token
+  const refreshToken = req.body.refreshToken
 
-  if (!token) return res.status(401).json({ message: "Missing token." })
+  if (!refreshToken) return res.status(401).json({ message: "Missing token." })
 
   try {
-    const decoded = verify(token, process.env.JWT_REFRESH_SECRET)
+    const decoded = verify(refreshToken, process.env.JWT_REFRESH_SECRET)
 
     req.body = {
       ...req.body,
-      userData: decoded
+      userData: decoded,
+      refreshToken
     }
 
     redis.get(decoded.sub.toString(), (err, data) => {
@@ -25,7 +26,7 @@ export function verifyRefreshToken(
       if (!data)
         return res.status(401).json({ message: "Refresh token isn't stored." })
 
-      if (JSON.parse(data).token !== token)
+      if (JSON.parse(data).token !== refreshToken)
         return res.status(401).json({ message: "Wrong refresh token." })
 
       next()

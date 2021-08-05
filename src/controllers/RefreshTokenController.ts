@@ -6,9 +6,11 @@ class RefreshTokenController {
 
   async handle(req: Request, res: Response): Promise<Response> {
     try {
-      const accessToken = await this.refreshTokenUseCase.execute(
-        req.body.userData.sub
-      )
+      const accessToken = await this.refreshTokenUseCase.execute({
+        userId: req.body.userData.sub,
+        token: req.headers.authorization.split(" ")[1],
+        refreshToken: req.body.refreshToken
+      })
 
       return res.status(200).json({ accessToken })
     } catch (error) {

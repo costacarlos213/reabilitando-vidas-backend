@@ -35,6 +35,7 @@ A aplicação é destinada a clínica de fisioterapia "Reabilitando Vidas". A cl
 - [x] JWT auth
 - [x] Refresh Token
 - [ ] Password reset
+- [ ] First login
 - [ ] Email scheduling
 - [ ] Appointment confirmation
 - [ ] Contact form email sending
