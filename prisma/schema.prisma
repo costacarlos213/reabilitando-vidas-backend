@@ -19,6 +19,7 @@ model User {
   cpf          String        @unique
   staff        Boolean       @default(false)
   firstLogin   Boolean       @default(true)
+  status       Status        @default(PENDING)
   appointments Appointment[]
 }
 
@@ -28,4 +29,9 @@ model Appointment {
   confirmed Boolean @default(false)
   userId    String
   user      User    @relation(fields: [userId], references: [id])
+}
+
+enum Status {
+  ACTIVE
+  PENDING
 }

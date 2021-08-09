@@ -1,12 +1,18 @@
 import { sign } from "jsonwebtoken"
-import { redis } from "../../database/redis"
+import { redis } from "@database/redis"
 import { RefreshTokenUseCase } from "./RefreshTokenUseCase"
 
 describe("Refresh Token test", () => {
-  const refreshToken = new RefreshTokenUseCase()
+  const refreshToken = new RefreshTokenUseCase(redis)
 
   afterAll(async () => {
-    await redis.quit()
+    await new Promise<void>(resolve => {
+      redis.quit(() => {
+        resolve()
+      })
+    })
+
+    await new Promise(resolve => setImmediate(resolve))
   })
 
   test("Missing refresh token", async () => {

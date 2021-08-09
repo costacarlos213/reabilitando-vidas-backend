@@ -1,5 +1,5 @@
 import { Appointment } from "@prisma/client"
-import { IAppointmentRepository } from "@repositories/appointmentRepository/AppointmentRepository"
+import { IAppointmentRepository } from "@repositories/appointmentRepository/IAppointmentRepository"
 
 class IndexAppointmentsUseCase {
   constructor(private appointmentRepository: IAppointmentRepository) {}

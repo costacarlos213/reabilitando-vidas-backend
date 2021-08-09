@@ -1,7 +1,7 @@
 import { AppointmentRepository } from "@repositories/appointmentRepository/implementation/AppointmentRepository"
 import { UserRepository } from "@repositories/userRepository/implementation/UserRepository"
 import { CreateAppointmentUseCase } from "@useCases/createAppointment/CreateAppointmentUseCase"
-import { CreateAppointmentController } from "src/controllers/CreateAppointmentController"
+import { CreateAppointmentController } from "@controllers/CreateAppointmentController"
 
 function CreateAppointmentControllerFactory() {
   const appointmentRepository = new AppointmentRepository()

@@ -1,7 +1,7 @@
 import {
   dayAppointments,
   IAppointmentRepository
-} from "@repositories/appointmentRepository/AppointmentRepository"
+} from "@repositories/appointmentRepository/IAppointmentRepository"
 import dayjs from "dayjs"
 import { IGetAppointmentsByDayDTO } from "./GetAppointmentsByDayDTO"
 

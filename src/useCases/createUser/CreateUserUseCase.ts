@@ -1,16 +1,26 @@
 import { User } from "@entities/User/User"
 import { ICreateUserDTO } from "./CreateUserDTO"
-import { IUserRepository } from "@repositories/userRepository/UserRepository"
+import { IUserRepository } from "@repositories/userRepository/IUserRepository"
 import bcrypt from "bcrypt"
+import { IMailProvider } from "@providers/mail/IMailProvider"
+import { ConfirmationLinkProvider } from "@providers/token/generateConfirmationToken"
+import { ITokenRepository } from "@repositories/tokenRepository/ITokenRepository"
 
 class CreateUserUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private userRepository: IUserRepository,
+    private mailProvider: IMailProvider,
+    private tokenRepository: ITokenRepository
+  ) {}
 
   async execute(userData: ICreateUserDTO): Promise<Error | void> {
     let password: string = userData.password
+    let firstLogin = true
 
     if (!password) {
       password = userData.cpf
+    } else {
+      firstLogin = false
     }
 
     if (password.trim().length === 0) {
@@ -32,7 +42,43 @@ class CreateUserUseCase {
         password: hashPassword
       })
 
-      await this.userRepository.save(user)
+      const nullOrId = await this.userRepository.save(user, firstLogin)
+      let userId: string
+
+      if (nullOrId) {
+        userId = nullOrId
+      } else {
+        userId = user.id
+      }
+
+      if (email) {
+        const { confirmationLink, confirmationToken } =
+          ConfirmationLinkProvider()
+
+        this.tokenRepository.set(
+          "CMT_" + confirmationToken,
+          JSON.stringify({ userId }),
+          true
+        )
+
+        console.log(confirmationLink)
+
+        this.mailProvider.sendEmail({
+          jobName: "accountConfirmation",
+          email: {
+            from: {
+              name: "Reabilitando vidas",
+              address: "reabilitandovidas@email.com"
+            },
+            to: {
+              name: name,
+              address: email
+            },
+            text: `Para confirmar a conta clique no link: ${confirmationLink}`,
+            subject: "Confirmação de email"
+          }
+        })
+      }
     } catch (err) {
       return err
     }

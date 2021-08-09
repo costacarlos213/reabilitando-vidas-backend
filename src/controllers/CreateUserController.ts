@@ -5,7 +5,7 @@ import { Request, Response } from "express"
 class CreateUserController {
   constructor(private createUserUseCase: CreateUserUseCase) {}
 
-  async handler(req: Request, res: Response): Promise<Response> {
+  async handle(req: Request, res: Response): Promise<Response> {
     const userData: ICreateUserDTO = req.body
 
     try {

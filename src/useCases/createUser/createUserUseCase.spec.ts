@@ -3,10 +3,16 @@ import { UserRepository } from "../../repositories/userRepository/implementation
 import { CreateUserUseCase } from "./CreateUserUseCase"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcrypt"
+import { MailProvider } from "@providers/mail/implementation/MailProvider"
+import queueOptions from "@config/queue"
+import { redis } from "@database/redis"
 
 describe("Create user use case tests", () => {
   const userRepo = new UserRepository()
-  const userUseCase = new CreateUserUseCase(userRepo)
+  const mailProvider = new MailProvider({
+    connection: queueOptions.connection
+  })
+  const userUseCase = new CreateUserUseCase(userRepo, mailProvider)
   const prisma = new PrismaClient()
 
   afterEach(async () => {
@@ -15,6 +21,18 @@ describe("Create user use case tests", () => {
         name: "Carlos Costa"
       }
     })
+  })
+
+  afterAll(async () => {
+    await mailProvider.close()
+
+    await new Promise<void>(resolve => {
+      redis.quit(() => {
+        resolve()
+      })
+    })
+
+    await new Promise(resolve => setImmediate(resolve))
   })
 
   test("Create User only with phone", async () => {
@@ -51,7 +69,7 @@ describe("Create user use case tests", () => {
     return expect(response).toBeNull()
   })
 
-  test("New User", async () => {
+  test.only("New User", async () => {
     const options: ICreateUserDTO = {
       cpf: "74482034010",
       email: "examplemailt@gmail.com",

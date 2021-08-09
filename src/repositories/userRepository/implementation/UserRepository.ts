@@ -1,10 +1,24 @@
 import { User } from "@entities/User/User"
-import { prisma } from "../../../database/client"
+import { prisma } from "@database/client"
 import { UserAlreadyExistsError } from "@useCases/errors/UserAlreadyExistsError"
-import { IUserRepository, logedUser } from "../UserRepository"
+import { IUserRepository, logedUser } from "../IUserRepository"
 import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
+import { Status, User as PrismaUser } from "@prisma/client"
 
 class UserRepository implements IUserRepository {
+  async updateStatus(status: Status, userId: string): Promise<void> {
+    await prisma.user.update({
+      data: {
+        status: status
+      },
+      where: {
+        id: userId
+      }
+    })
+
+    return null
+  }
+
   async getUserByLoginOptions(login: string): Promise<logedUser> {
     const user = await prisma.user.findFirst({
       where: {
@@ -20,7 +34,8 @@ class UserRepository implements IUserRepository {
       select: {
         password: true,
         id: true,
-        cpf: true
+        firstLogin: true,
+        status: true
       }
     })
 
@@ -54,7 +69,7 @@ class UserRepository implements IUserRepository {
     return user
   }
 
-  async save(user: User): Promise<void> {
+  async save(user: User, firstLogin: boolean): Promise<void | string> {
     const { cpf, Email, Phone, Name, Password, Staff } = user
 
     try {
@@ -64,16 +79,24 @@ class UserRepository implements IUserRepository {
         Phone.value
       )
 
-      if (userAlreadyExists) throw new UserAlreadyExistsError()
+      if (userAlreadyExists) {
+        if (userAlreadyExists.status === "PENDING") {
+          return userAlreadyExists.id
+        } else {
+          throw new UserAlreadyExistsError()
+        }
+      }
 
       await prisma.user.create({
         data: {
+          id: user.id,
           cpf: cpf.value,
           name: Name.value,
           password: Password,
           email: Email.value,
           phone: Phone.value,
-          staff: Staff
+          staff: Staff,
+          firstLogin
         }
       })
 
@@ -87,7 +110,7 @@ class UserRepository implements IUserRepository {
     cpf: string,
     email: string,
     phone: string
-  ): Promise<boolean> {
+  ): Promise<PrismaUser> {
     const userAlreadyExists = await prisma.user.findFirst({
       where: {
         OR: [
@@ -111,10 +134,10 @@ class UserRepository implements IUserRepository {
     })
 
     if (userAlreadyExists) {
-      return true
+      return userAlreadyExists
     }
 
-    return false
+    return null
   }
 }
 

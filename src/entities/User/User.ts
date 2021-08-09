@@ -9,6 +9,7 @@ import { InvalidNameError } from "../errors/invalidNameError"
 import { InvalidEmailError } from "../errors/invalidEmailError"
 import { Phone } from "./Phone"
 import { InvalidPhoneError } from "../errors/invalidPhoneError"
+import { v4 } from "uuid"
 
 export class User {
   private readonly _id: string
@@ -24,6 +25,8 @@ export class User {
   ) {
     if (id) {
       this._id = id
+    } else {
+      this._id = v4()
     }
   }
 

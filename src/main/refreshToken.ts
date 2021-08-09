@@ -1,8 +1,11 @@
 import { RefreshTokenUseCase } from "@useCases/RefreshToken/RefreshTokenUseCase"
-import { RefreshTokenController } from "src/controllers/RefreshTokenController"
+import { RefreshTokenController } from "@controllers/RefreshTokenController"
+import { TokenRepository } from "@repositories/tokenRepository/implementation/TokenRepository"
 
 function RefreshTokenControllerFactory() {
-  const refreshTokenUseCase = new RefreshTokenUseCase()
+  const tokenRepository = new TokenRepository()
+
+  const refreshTokenUseCase = new RefreshTokenUseCase(tokenRepository)
 
   const refreshTokenController = new RefreshTokenController(refreshTokenUseCase)
 

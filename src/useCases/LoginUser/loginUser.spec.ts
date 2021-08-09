@@ -6,7 +6,8 @@ import { redis } from "../../database/redis"
 
 describe("Login user tests", () => {
   const userRepo = new UserRepository()
-  const loginUserUseCase = new LoginUserUseCase(userRepo)
+
+  const loginUserUseCase = new LoginUserUseCase(userRepo, redis)
 
   beforeAll(async () => {
     const hash = await bcrypt.hash("carlitos13", 8)
@@ -29,7 +30,13 @@ describe("Login user tests", () => {
       }
     })
 
-    redis.quit()
+    await new Promise<void>(resolve => {
+      redis.quit(() => {
+        resolve()
+      })
+    })
+
+    await new Promise(resolve => setImmediate(resolve))
   })
 
   test("Login User with email", async () => {

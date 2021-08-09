@@ -4,7 +4,7 @@ import { Appointment as dbAppointment } from "@prisma/client"
 import {
   dayAppointments,
   IAppointmentRepository
-} from "../AppointmentRepository"
+} from "../IAppointmentRepository"
 
 class AppointmentRepository implements IAppointmentRepository {
   async indexAppointments(): Promise<dbAppointment[]> {

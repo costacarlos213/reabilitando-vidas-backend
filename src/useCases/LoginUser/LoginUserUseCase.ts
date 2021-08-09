@@ -1,11 +1,15 @@
-import { IUserRepository } from "@repositories/userRepository/UserRepository"
+import { IUserRepository } from "@repositories/userRepository/IUserRepository"
 import { compare } from "bcrypt"
-import { generateAccessToken } from "../../providers/generateAccessToken"
-import { generateRefreshToken } from "../../providers/generateRefreshToken"
+import { AccessTokenProvider } from "@providers/token/generateAccessToken"
+import { RefreshTokenProvider } from "@providers/token/generateRefreshToken"
 import { ILoginUserDTO, ILoginUserResponse } from "./LoginUserDTO"
+import { ITokenRepository } from "@repositories/tokenRepository/ITokenRepository"
 
 class LoginUserUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private userRepository: IUserRepository,
+    private tokenRepository: ITokenRepository
+  ) {}
 
   async execute(
     userAccessData: ILoginUserDTO
@@ -15,19 +19,22 @@ class LoginUserUseCase {
         userAccessData.login
       )
 
-      if (!user) throw new Error("Wrong credentials")
+      if (!user) throw new Error("Wrong credentials.")
 
       const isPasswordValid = await compare(
         userAccessData.password,
         user.password
       )
 
-      if (!isPasswordValid) throw new Error("Wrong credentials")
+      if (!isPasswordValid) throw new Error("Wrong credentials.")
+      if (user.status === "PENDING") throw new Error("Confirm your account.")
 
-      const accessToken = generateAccessToken(user.id)
-      const refreshToken = generateRefreshToken(user.id)
+      const accessToken = AccessTokenProvider(user.id)
+      const refreshToken = RefreshTokenProvider(user.id)
 
-      return { accessToken, refreshToken }
+      this.tokenRepository.set(user.id, JSON.stringify({ token: refreshToken }))
+
+      return { accessToken, refreshToken, firstLogin: user.firstLogin }
     } catch (error) {
       return error
     }

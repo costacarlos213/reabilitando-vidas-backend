@@ -6,4 +6,5 @@ export interface ILoginUserDTO {
 export interface ILoginUserResponse {
   accessToken: string
   refreshToken: string
+  firstLogin: boolean
 }

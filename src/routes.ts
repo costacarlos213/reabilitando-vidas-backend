@@ -1,4 +1,5 @@
 import { Router } from "express"
+import { accountConfirmationController } from "./main/accountConfirmation"
 import { createAppointmentController } from "./main/createAppointment"
 import { createUserController } from "./main/createUser"
 import { getAppointmentsByDayController } from "./main/getAppointmentsByDay"
@@ -11,10 +12,16 @@ import { verifyToken } from "./middlewares/verifyToken"
 
 const router = Router()
 
+// User account routes
 router.post("/user", async (req, res) => {
-  return await createUserController.handler(req, res)
+  return await createUserController.handle(req, res)
 })
 
+router.get("/confirmation/:token", async (req, res) => {
+  return await accountConfirmationController.handle(req, res)
+})
+
+// Auth routes
 router.post("/auth/login", async (req, res) => {
   return await loginUserController.handler(req, res)
 })
@@ -27,6 +34,7 @@ router.get("/token", verifyRefreshToken, async (req, res) => {
   return await refreshTokenController.handle(req, res)
 })
 
+// Appointment routes
 router.post("/appointment", verifyToken, async (req, res) => {
   return await createAppointmentController.handler(req, res)
 })

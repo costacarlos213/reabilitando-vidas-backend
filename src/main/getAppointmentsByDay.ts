@@ -1,6 +1,6 @@
 import { AppointmentRepository } from "@repositories/appointmentRepository/implementation/AppointmentRepository"
 import { GetAppointmentByDateUseCase } from "@useCases/getAppointmentByDateTime/GetAppointmentByDateUseCase"
-import { GetAppointmentByDateController } from "src/controllers/GetAppointmentsByDayController"
+import { GetAppointmentByDateController } from "@controllers/GetAppointmentsByDayController"
 
 function getAppointmentsByDayControllerFactory() {
   const appointmentRepository = new AppointmentRepository()

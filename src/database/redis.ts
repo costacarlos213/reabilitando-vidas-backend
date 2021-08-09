@@ -1,5 +1,8 @@
-import { createClient } from "redis"
+import Redis from "ioredis"
 
-const redis = createClient(6379, "127.0.0.1")
+const redis = new Redis(
+  parseInt(process.env.REDIS_PORT || "6379"),
+  process.env.REDIS_HOST
+)
 
 export { redis }

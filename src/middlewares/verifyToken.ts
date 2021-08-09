@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express"
 import { verify } from "jsonwebtoken"
-import { redis } from "src/database/redis"
+import { TokenRepository } from "@repositories/tokenRepository/implementation/TokenRepository"
 
-export function verifyToken(
+export async function verifyToken(
   req: Request,
   res: Response,
   next: NextFunction
-): void | Response {
+): Promise<void | Response> {
   try {
     const authToken = req.headers.authorization
 
@@ -22,21 +22,23 @@ export function verifyToken(
       token
     }
 
-    redis.get("BL_" + decoded.sub.toString(), (err, data) => {
-      if (err) throw err
+    const tokenRepository = new TokenRepository()
 
-      if (!data) {
-        next()
-      } else {
-        if (JSON.parse(data).token === token) {
-          return res
-            .status(401)
-            .json({ message: "Trying to login with blacklisted token" })
-        }
-      }
+    const blacklistedToken = await tokenRepository.get(
+      "BL_" + decoded.sub.toString()
+    )
 
+    if (!blacklistedToken) {
       next()
-    })
+    } else {
+      if (JSON.parse(blacklistedToken).token === token) {
+        return res
+          .status(401)
+          .json({ message: "Trying to login with blacklisted token" })
+      }
+    }
+
+    next()
   } catch (error) {
     return res.status(401).json({
       message: "Invalid Session",

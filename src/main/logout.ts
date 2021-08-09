@@ -1,8 +1,11 @@
 import { LogoutUseCase } from "@useCases/logout/LogoutUseCase"
-import { LogoutController } from "src/controllers/LogoutController"
+import { LogoutController } from "@controllers/LogoutController"
+import { TokenRepository } from "@repositories/tokenRepository/implementation/TokenRepository"
 
 function LogoutControllerFactory() {
-  const logoutUseCase = new LogoutUseCase()
+  const tokenRepository = new TokenRepository()
+
+  const logoutUseCase = new LogoutUseCase(tokenRepository)
 
   const logoutController = new LogoutController(logoutUseCase)
 
