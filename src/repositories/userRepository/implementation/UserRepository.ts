@@ -3,9 +3,17 @@ import { prisma } from "@database/client"
 import { UserAlreadyExistsError } from "@useCases/errors/UserAlreadyExistsError"
 import { IUserRepository, logedUser } from "../IUserRepository"
 import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
-import { Status, User as PrismaUser } from "@prisma/client"
+import { Status } from "@prisma/client"
 
 class UserRepository implements IUserRepository {
+  async deleteUser(id: string): Promise<void> {
+    await prisma.user.delete({
+      where: {
+        id
+      }
+    })
+  }
+
   async updateStatus(status: Status, userId: string): Promise<void> {
     await prisma.user.update({
       data: {
@@ -80,11 +88,7 @@ class UserRepository implements IUserRepository {
       )
 
       if (userAlreadyExists) {
-        if (userAlreadyExists.status === "PENDING") {
-          return userAlreadyExists.id
-        } else {
-          throw new UserAlreadyExistsError()
-        }
+        throw new UserAlreadyExistsError()
       }
 
       await prisma.user.create({
@@ -110,7 +114,7 @@ class UserRepository implements IUserRepository {
     cpf: string,
     email: string,
     phone: string
-  ): Promise<PrismaUser> {
+  ): Promise<boolean> {
     const userAlreadyExists = await prisma.user.findFirst({
       where: {
         OR: [
@@ -134,10 +138,10 @@ class UserRepository implements IUserRepository {
     })
 
     if (userAlreadyExists) {
-      return userAlreadyExists
+      return true
     }
 
-    return null
+    return false
   }
 }
 

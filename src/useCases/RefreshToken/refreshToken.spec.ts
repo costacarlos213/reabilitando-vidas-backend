@@ -1,9 +1,12 @@
 import { sign } from "jsonwebtoken"
-import { redis } from "@database/redis"
+import { redis } from "@database/redis/redis"
 import { RefreshTokenUseCase } from "./RefreshTokenUseCase"
+import { TokenRepository } from "@repositories/tokenRepository/implementation/TokenRepository"
 
 describe("Refresh Token test", () => {
-  const refreshToken = new RefreshTokenUseCase(redis)
+  const tokenRepo = new TokenRepository()
+
+  const refreshToken = new RefreshTokenUseCase(tokenRepo)
 
   afterAll(async () => {
     await new Promise<void>(resolve => {

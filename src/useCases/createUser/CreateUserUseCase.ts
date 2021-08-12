@@ -55,11 +55,11 @@ class CreateUserUseCase {
         const { confirmationLink, confirmationToken } =
           ConfirmationLinkProvider()
 
-        this.tokenRepository.set(
-          "CMT_" + confirmationToken,
-          JSON.stringify({ userId }),
-          true
-        )
+        this.tokenRepository.set({
+          key: `CMT_${confirmationToken}_${userId}`,
+          value: JSON.stringify({ userId }),
+          expiration: 60 * 60 * 12
+        })
 
         console.log(confirmationLink)
 

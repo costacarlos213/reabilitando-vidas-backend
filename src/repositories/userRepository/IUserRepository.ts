@@ -13,4 +13,5 @@ export interface IUserRepository {
   save(user: User, firstLogin: boolean): Promise<void | string>
   getUserByLoginOptions(login: string): Promise<logedUser>
   updateStatus(status: Status, userId: string): Promise<void>
+  deleteUser(id: string): Promise<void>
 }

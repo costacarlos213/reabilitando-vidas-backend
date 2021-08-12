@@ -32,7 +32,10 @@ class LoginUserUseCase {
       const accessToken = AccessTokenProvider(user.id)
       const refreshToken = RefreshTokenProvider(user.id)
 
-      this.tokenRepository.set(user.id, JSON.stringify({ token: refreshToken }))
+      this.tokenRepository.set({
+        key: user.id,
+        value: JSON.stringify({ token: refreshToken })
+      })
 
       return { accessToken, refreshToken, firstLogin: user.firstLogin }
     } catch (error) {

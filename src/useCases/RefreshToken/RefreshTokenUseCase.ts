@@ -21,7 +21,10 @@ class RefreshTokenUseCase {
 
     const accessToken = AccessTokenProvider(userId)
 
-    this.tokenRepository.set("BL_" + userId, JSON.stringify({ token: token }))
+    this.tokenRepository.set({
+      key: "BL_" + userId,
+      value: JSON.stringify({ token: token })
+    })
 
     return accessToken
   }

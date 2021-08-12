@@ -5,14 +5,17 @@ import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcrypt"
 import { MailProvider } from "@providers/mail/implementation/MailProvider"
 import queueOptions from "@config/queue"
-import { redis } from "@database/redis"
+import { redis } from "@database/redis/redis"
+import { TokenRepository } from "@repositories/tokenRepository/implementation/TokenRepository"
 
 describe("Create user use case tests", () => {
   const userRepo = new UserRepository()
   const mailProvider = new MailProvider({
     connection: queueOptions.connection
   })
-  const userUseCase = new CreateUserUseCase(userRepo, mailProvider)
+  const tokenRepo = new TokenRepository()
+
+  const userUseCase = new CreateUserUseCase(userRepo, mailProvider, tokenRepo)
   const prisma = new PrismaClient()
 
   afterEach(async () => {

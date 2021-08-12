@@ -11,7 +11,10 @@ class LogoutUseCase {
 
     this.tokenRepository.del(userId)
 
-    this.tokenRepository.set("BL_" + userId, JSON.stringify({ token }))
+    this.tokenRepository.set({
+      key: "BL_" + userId,
+      value: JSON.stringify({ token })
+    })
   }
 }
 

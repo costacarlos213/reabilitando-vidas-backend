@@ -2,12 +2,15 @@ import { UserRepository } from "@repositories/userRepository/implementation/User
 import { LoginUserUseCase } from "./LoginUserUseCase"
 import { prisma } from "../../database/client"
 import bcrypt from "bcrypt"
-import { redis } from "../../database/redis"
+import { redis } from "../../database/redis/redis"
+import { TokenRepository } from "@repositories/tokenRepository/implementation/TokenRepository"
 
 describe("Login user tests", () => {
   const userRepo = new UserRepository()
 
-  const loginUserUseCase = new LoginUserUseCase(userRepo, redis)
+  const tokenRepo = new TokenRepository()
+
+  const loginUserUseCase = new LoginUserUseCase(userRepo, tokenRepo)
 
   beforeAll(async () => {
     const hash = await bcrypt.hash("carlitos13", 8)

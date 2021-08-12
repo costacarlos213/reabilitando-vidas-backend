@@ -9,14 +9,17 @@ class AccountConfirmationUseCase {
 
   async execute(confirmationToken: string): Promise<void | Error> {
     try {
-      const userId = await this.tokenRepository.get("CMT_" + confirmationToken)
+      const userId = await this.tokenRepository.getByPattern(
+        `CMT_${confirmationToken}_`
+      )
 
       if (userId) {
         await this.userRepository.updateStatus(
           "ACTIVE",
           JSON.parse(userId).userId
         )
-        this.tokenRepository.del("CMT_" + confirmationToken)
+
+        this.tokenRepository.deleleteByPattern(`CMT_${confirmationToken}_`)
       } else {
         return new Error("Invalid confirmation link.")
       }
