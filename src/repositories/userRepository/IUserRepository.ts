@@ -2,6 +2,8 @@ import { User } from "@entities/User/User"
 import { Status } from "@prisma/client"
 
 export type logedUser = {
+  name: string
+  email: string
   password: string
   firstLogin: boolean
   id: string
@@ -12,6 +14,6 @@ export interface IUserRepository {
   getUserByCPF(requestedCpf: string): Promise<User>
   save(user: User, firstLogin: boolean): Promise<void | string>
   getUserByLoginOptions(login: string): Promise<logedUser>
-  updateStatus(status: Status, userId: string): Promise<void>
+  updateUser(field: Record<string, unknown>, userId: string): Promise<void>
   deleteUser(id: string): Promise<void>
 }

@@ -6,6 +6,7 @@ import { getAppointmentsByDayController } from "./main/getAppointmentsByDay"
 import { indexAppointmentsController } from "./main/indexAppointments"
 import { loginUserController } from "./main/loginUser"
 import { logoutController } from "./main/logout"
+import { passwordResetController } from "./main/passwordReset"
 import { refreshTokenController } from "./main/refreshToken"
 import { verifyRefreshToken } from "./middlewares/verifyRefreshToken"
 import { verifyToken } from "./middlewares/verifyToken"
@@ -19,6 +20,14 @@ router.post("/user", async (req, res) => {
 
 router.get("/confirmation/:token", async (req, res) => {
   return await accountConfirmationController.handle(req, res)
+})
+
+router.get("/password", async (req, res) => {
+  return await passwordResetController.handleRequest(req, res)
+})
+
+router.post("/password", async (req, res) => {
+  return await passwordResetController.handleReset(req, res)
 })
 
 // Auth routes

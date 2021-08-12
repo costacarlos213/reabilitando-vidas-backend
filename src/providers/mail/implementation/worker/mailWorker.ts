@@ -5,7 +5,7 @@ import path from "path"
 
 export const worker = new Worker<IEmail>(
   queueOptions.queueName,
-  path.join(__dirname, "\\../proccessor/mailProccessor.ts"),
+  path.join(__dirname, "\\../proccessor/mailProccessor.js"),
   {
     connection: queueOptions.connection,
     concurrency: queueOptions.concurrency,

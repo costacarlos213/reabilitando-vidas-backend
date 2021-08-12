@@ -14,8 +14,10 @@ class AccountConfirmationUseCase {
       )
 
       if (userId) {
-        await this.userRepository.updateStatus(
-          "ACTIVE",
+        await this.userRepository.updateUser(
+          {
+            status: "ACTIVE"
+          },
           JSON.parse(userId).userId
         )
 

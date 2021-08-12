@@ -1,9 +1,8 @@
 import { User } from "@entities/User/User"
 import { prisma } from "@database/client"
 import { UserAlreadyExistsError } from "@useCases/errors/UserAlreadyExistsError"
-import { IUserRepository, logedUser } from "../IUserRepository"
 import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
-import { Status } from "@prisma/client"
+import { IUserRepository, logedUser } from "../IUserRepository"
 
 class UserRepository implements IUserRepository {
   async deleteUser(id: string): Promise<void> {
@@ -14,11 +13,12 @@ class UserRepository implements IUserRepository {
     })
   }
 
-  async updateStatus(status: Status, userId: string): Promise<void> {
+  async updateUser(
+    field: Record<string, unknown>,
+    userId: string
+  ): Promise<void> {
     await prisma.user.update({
-      data: {
-        status: status
-      },
+      data: field,
       where: {
         id: userId
       }
@@ -43,7 +43,9 @@ class UserRepository implements IUserRepository {
         password: true,
         id: true,
         firstLogin: true,
-        status: true
+        status: true,
+        name: true,
+        email: true
       }
     })
 

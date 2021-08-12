@@ -52,8 +52,9 @@ class CreateUserUseCase {
       }
 
       if (email) {
-        const { confirmationLink, confirmationToken } =
-          ConfirmationLinkProvider()
+        const confirmationToken = ConfirmationLinkProvider()
+
+        const confirmationLink = `${process.env.SERVER_URL}/confirmation/${confirmationToken}`
 
         this.tokenRepository.set({
           key: `CMT_${confirmationToken}_${userId}`,
