@@ -11,10 +11,14 @@ export type dayAppointments = dbAppointment & {
 }
 
 export interface IAppointmentRepository {
-  save(appointment: Appointment): Promise<void>
+  save(appointment: Appointment): Promise<string>
   getDayAppointments(
     initialDateTime: string,
     finalDateTime
   ): Promise<dayAppointments[]>
   indexAppointments(): Promise<dbAppointment[]>
+  updateAppointment(
+    field: Record<string, unknown>,
+    appointmentId: number
+  ): Promise<void>
 }

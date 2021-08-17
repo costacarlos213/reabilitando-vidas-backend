@@ -59,9 +59,9 @@ class TokenRepository implements ITokenRepository {
       })
 
       stream.on("end", async () => {
-        const userId = await this.get(entireKey)
+        const id = await this.get(entireKey)
 
-        resolve(userId)
+        resolve(id)
       })
     })
   }

@@ -1,8 +1,10 @@
-import { User } from "@entities/User/User"
 import { prisma } from "@database/client"
+import { User as PrismaUser } from "@prisma/client"
+import { User } from "@entities/User/User"
 import { UserAlreadyExistsError } from "@useCases/errors/UserAlreadyExistsError"
 import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
-import { IUserRepository, logedUser } from "../IUserRepository"
+import { IUserRepository } from "../IUserRepository"
+import { logedUser, UniqueUserKeys } from "../userRepo"
 
 class UserRepository implements IUserRepository {
   async deleteUser(id: string): Promise<void> {
@@ -52,31 +54,14 @@ class UserRepository implements IUserRepository {
     return user
   }
 
-  async getUserByCPF(requestedCpf: string): Promise<User> {
+  async getUniqueUser(key: UniqueUserKeys): Promise<PrismaUser> {
     const databaseStoredUser = await prisma.user.findUnique({
-      where: {
-        cpf: requestedCpf
-      },
-      select: {
-        id: true,
-        name: true,
-        cpf: true,
-        email: true,
-        phone: true
-      }
+      where: key
     })
 
     if (!databaseStoredUser) throw new UserDoNotExistsError()
 
-    const user = User.create({
-      id: databaseStoredUser.id,
-      cpf: databaseStoredUser.cpf,
-      email: databaseStoredUser.email,
-      name: databaseStoredUser.name,
-      phone: databaseStoredUser.phone
-    })
-
-    return user
+    return databaseStoredUser
   }
 
   async save(user: User, firstLogin: boolean): Promise<void | string> {

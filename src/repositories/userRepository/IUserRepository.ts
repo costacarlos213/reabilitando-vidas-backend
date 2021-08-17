@@ -1,17 +1,9 @@
 import { User } from "@entities/User/User"
-import { Status } from "@prisma/client"
-
-export type logedUser = {
-  name: string
-  email: string
-  password: string
-  firstLogin: boolean
-  id: string
-  status: Status
-}
+import { User as PrismaUser } from "@prisma/client"
+import { logedUser, UniqueUserKeys } from "./userRepo"
 
 export interface IUserRepository {
-  getUserByCPF(requestedCpf: string): Promise<User>
+  getUniqueUser(key: UniqueUserKeys): Promise<PrismaUser>
   save(user: User, firstLogin: boolean): Promise<void | string>
   getUserByLoginOptions(login: string): Promise<logedUser>
   updateUser(field: Record<string, unknown>, userId: string): Promise<void>

@@ -6,6 +6,10 @@ worker.on("failed", (job, err) =>
   console.log(`Failed job ${job.id} with ${err}`)
 )
 
+worker.on("completed", job => {
+  console.log(`Successful ${job}`)
+})
+
 handleExpiredKeyEvent()
 
 app.listen(process.env.SERVER_PORT || 3000, () =>

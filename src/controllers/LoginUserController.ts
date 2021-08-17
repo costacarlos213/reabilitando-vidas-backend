@@ -24,7 +24,7 @@ class LoginUserController {
     } catch (err) {
       return res.status(500).json({
         message: "The application has encountered an error.",
-        error: err
+        error: err.message
       })
     }
   }

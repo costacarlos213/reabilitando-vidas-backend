@@ -7,6 +7,18 @@ import {
 } from "../IAppointmentRepository"
 
 class AppointmentRepository implements IAppointmentRepository {
+  async updateAppointment(
+    field: Record<string, unknown>,
+    appointmentId: number
+  ): Promise<void> {
+    await prisma.appointment.update({
+      where: {
+        id: appointmentId
+      },
+      data: field
+    })
+  }
+
   async indexAppointments(): Promise<dbAppointment[]> {
     const appointments = await prisma.appointment.findMany()
 
@@ -39,7 +51,7 @@ class AppointmentRepository implements IAppointmentRepository {
     return databaseStoredAppointments
   }
 
-  async save(appointment: Appointment): Promise<void> {
+  async save(appointment: Appointment): Promise<string> {
     const { User, Datetime } = appointment
 
     const appointmentAlreadyExists = await this.appointmentAlreadyExists(
@@ -49,14 +61,14 @@ class AppointmentRepository implements IAppointmentRepository {
     if (appointmentAlreadyExists)
       throw new Error("There are 2 appointments at the same time")
 
-    await prisma.appointment.create({
+    const dbAppointment = await prisma.appointment.create({
       data: {
         dateTime: Datetime.value,
         userId: User.id
       }
     })
 
-    return null
+    return dbAppointment.id.toString()
   }
 
   private async appointmentAlreadyExists(dateTime: string): Promise<boolean> {

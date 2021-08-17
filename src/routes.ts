@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { accountConfirmationController } from "./main/accountConfirmation"
+import { appointmentConfirmationController } from "./main/appointmentConfirmation"
 import { createAppointmentController } from "./main/createAppointment"
 import { createUserController } from "./main/createUser"
 import { getAppointmentsByDayController } from "./main/getAppointmentsByDay"
@@ -54,6 +55,10 @@ router.get("/appointment/day", verifyToken, async (req, res) => {
 
 router.get("/appointment", verifyToken, async (req, res) => {
   return await indexAppointmentsController.handler(req, res)
+})
+
+router.get("/appointment/:token", async (req, res) => {
+  return await appointmentConfirmationController.handle(req, res)
 })
 
 export { router }

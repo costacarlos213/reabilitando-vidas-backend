@@ -7,13 +7,16 @@ class GetAppointmentByDateController {
   ) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
-    const { initialDate, finalDate } = req.body
+    const { initialDate, finalDate, userData } = req.body
 
     try {
-      const appointments = await this.getAppointmentByDateUseCase.execute({
-        initialDate,
-        finalDate
-      })
+      const appointments = await this.getAppointmentByDateUseCase.execute(
+        {
+          initialDate,
+          finalDate
+        },
+        userData.sub
+      )
 
       if (appointments instanceof Error) {
         return res.status(400).json({
@@ -27,7 +30,7 @@ class GetAppointmentByDateController {
     } catch (err) {
       return res.status(500).json({
         message: "The application has encountered an error.",
-        error: err
+        error: err.message
       })
     }
   }

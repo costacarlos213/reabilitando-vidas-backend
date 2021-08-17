@@ -5,8 +5,12 @@ class IndexAppointmentsController {
   constructor(private indexAppointmentsUseCase: IndexAppointmentsUseCase) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
+    const { userData } = req.body
+
     try {
-      const appointments = await this.indexAppointmentsUseCase.execute()
+      const appointments = await this.indexAppointmentsUseCase.execute(
+        userData.sub
+      )
 
       if (appointments instanceof Error) {
         return res.status(400).json({
@@ -20,7 +24,7 @@ class IndexAppointmentsController {
     } catch (err) {
       return res.status(500).json({
         message: "The application has encountered an error.",
-        error: err
+        error: err.message
       })
     }
   }

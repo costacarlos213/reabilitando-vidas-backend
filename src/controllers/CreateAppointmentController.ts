@@ -5,12 +5,13 @@ class CreateAppointmentController {
   constructor(private createAppointmentUseCase: CreateAppointmentUseCase) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
-    const { cpf, dateTime } = req.body
+    const { cpf, dateTime, userData } = req.body
 
     try {
       const AppointmentUseCaseResponse =
         await this.createAppointmentUseCase.execute({
           cpf,
+          userId: userData.sub,
           dateTime
         })
 
@@ -23,7 +24,7 @@ class CreateAppointmentController {
       return res.status(201).json()
     } catch (error) {
       return res.status(500).json({
-        message: error
+        message: error.message
       })
     }
   }
