@@ -8,8 +8,12 @@ class RefreshTokenController {
     try {
       const accessToken = await this.refreshTokenUseCase.execute({
         userId: req.body.userData.sub,
-        token: req.headers.authorization.split(" ")[1],
         refreshToken: req.body.refreshToken
+      })
+
+      res.cookie("vidas.access-token", accessToken, {
+        path: "/",
+        maxAge: 30 * 1000 // 30s
       })
 
       return res.status(200).json({ accessToken })

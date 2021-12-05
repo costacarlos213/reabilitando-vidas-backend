@@ -1,6 +1,9 @@
 import { Either, left, right } from "@shared/either"
 import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
 import { InvalidDateTimeError } from "../errors/invalidDateTime"
+
+dayjs.extend(utc)
 
 class DateTime {
   private constructor(private readonly _dateTime: string) {}
@@ -8,7 +11,7 @@ class DateTime {
   static create(
     dateTime: string | Date
   ): Either<InvalidDateTimeError, DateTime> {
-    const formatedDateTime = dayjs(dateTime).toISOString()
+    const formatedDateTime = dayjs.utc(dateTime).toISOString()
 
     const isValid = this.validate(formatedDateTime)
 

@@ -12,9 +12,9 @@ class AppointmentConfirmationUseCase {
       `APT_CMT_${token}`
     )
 
-    const id = JSON.parse(appointmentId).appointmentId
-
     if (appointmentId) {
+      const id = JSON.parse(appointmentId).appointmentId
+
       await this.appointmentRepository.updateAppointment(
         { confirmed: true },
         parseInt(id)

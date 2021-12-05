@@ -7,15 +7,20 @@ import { MailProvider } from "@providers/mail/implementation/MailProvider"
 import queueOptions from "@config/queue"
 import { redis } from "@database/redis/redis"
 import { TokenRepository } from "@repositories/tokenRepository/implementation/TokenRepository"
+import { ConfirmationProvider } from "@providers/confirmation/implementation/ConfirmationProvider"
 
 describe("Create user use case tests", () => {
   const userRepo = new UserRepository()
+  const tokenRepository = new TokenRepository()
   const mailProvider = new MailProvider({
     connection: queueOptions.connection
   })
-  const tokenRepo = new TokenRepository()
+  const confirmationProvider = new ConfirmationProvider(
+    tokenRepository,
+    mailProvider
+  )
 
-  const userUseCase = new CreateUserUseCase(userRepo, mailProvider, tokenRepo)
+  const userUseCase = new CreateUserUseCase(userRepo, confirmationProvider)
   const prisma = new PrismaClient()
 
   afterEach(async () => {

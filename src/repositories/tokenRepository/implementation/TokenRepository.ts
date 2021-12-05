@@ -42,7 +42,7 @@ class TokenRepository implements ITokenRepository {
     })
 
     stream.on("data", matchedKey => {
-      redis.unlink(matchedKey)
+      redis.unlink(matchedKey[0])
     })
   }
 
@@ -55,7 +55,9 @@ class TokenRepository implements ITokenRepository {
       let entireKey: string
 
       stream.on("data", matchedKey => {
-        entireKey = matchedKey[0]
+        if (matchedKey[0]) {
+          entireKey = matchedKey[0]
+        }
       })
 
       stream.on("end", async () => {

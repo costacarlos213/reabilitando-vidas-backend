@@ -1,4 +1,5 @@
 import { AppointmentRepository } from "@repositories/appointmentRepository/implementation/AppointmentRepository"
+import { UserRepository } from "@repositories/userRepository/implementation/UserRepository"
 import dayjs from "dayjs"
 import parse from "dayjs/plugin/customParseFormat"
 import { prisma } from "../../database/client"
@@ -8,7 +9,11 @@ dayjs.extend(parse)
 
 describe("Get Appoint by date test", () => {
   const appointmentRepo = new AppointmentRepository()
-  const appointmentUseCase = new GetAppointmentByDateUseCase(appointmentRepo)
+  const userRepository = new UserRepository()
+  const appointmentUseCase = new GetAppointmentByDateUseCase(
+    appointmentRepo,
+    userRepository
+  )
 
   beforeAll(async () => {
     await prisma.appointment.deleteMany({
@@ -70,28 +75,37 @@ describe("Get Appoint by date test", () => {
 
   it("Should return a array of appointments", async () => {
     await expect(
-      appointmentUseCase.execute({
-        initialDate: dayjs("16/02/2022", "DD/MM/YYYY").toISOString(),
-        finalDate: dayjs("16/02/2022", "DD/MM/YYYY").toISOString()
-      })
+      appointmentUseCase.execute(
+        {
+          initialDate: dayjs("16/02/2022", "DD/MM/YYYY").toISOString(),
+          finalDate: dayjs("16/02/2022", "DD/MM/YYYY").toISOString()
+        },
+        "a0cfa565-1345-49ae-9390-710e3546c682"
+      )
     ).resolves.toHaveLength(2)
   })
 
   it("Shouldn't return appointments", async () => {
     await expect(
-      appointmentUseCase.execute({
-        initialDate: dayjs("16/03/2022", "DD/MM/YYYY").toISOString(),
-        finalDate: dayjs("16/03/2022", "DD/MM/YYYY").toISOString()
-      })
+      appointmentUseCase.execute(
+        {
+          initialDate: dayjs("16/03/2022", "DD/MM/YYYY").toISOString(),
+          finalDate: dayjs("16/03/2022", "DD/MM/YYYY").toISOString()
+        },
+        "a0cfa565-1345-49ae-9390-710e3546c682"
+      )
     ).resolves.toEqual([])
   })
 
   it("Should return all appointments", async () => {
     await expect(
-      appointmentUseCase.execute({
-        initialDate: dayjs("16/03/2021", "DD/MM/YYYY").toISOString(),
-        finalDate: dayjs("16/06/2023", "DD/MM/YYYY").toISOString()
-      })
+      appointmentUseCase.execute(
+        {
+          initialDate: dayjs("16/03/2021", "DD/MM/YYYY").toISOString(),
+          finalDate: dayjs("16/06/2023", "DD/MM/YYYY").toISOString()
+        },
+        "a0cfa565-1345-49ae-9390-710e3546c682"
+      )
     ).resolves.toHaveLength(5)
   })
 })

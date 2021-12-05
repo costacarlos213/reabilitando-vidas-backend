@@ -19,7 +19,8 @@ class CreateAppointmentUseCase {
   ) {}
 
   async execute(appointmentData: ICreateAppointmentDTO): Promise<Error | void> {
-    const { cpf, dateTime, userId } = appointmentData
+    const { patient, dateTime, comments, appointmentType, userId } =
+      appointmentData
 
     const staffUser = await this.userRepository.getUniqueUser({
       id: userId
@@ -27,27 +28,25 @@ class CreateAppointmentUseCase {
 
     if (staffUser.staff) {
       try {
-        const databaseUser = await this.userRepository.getUniqueUser({
-          cpf
-        })
-
         const user = User.create({
-          cpf: databaseUser.cpf,
-          email: databaseUser.email,
-          name: databaseUser.name,
-          phone: databaseUser.phone,
-          id: databaseUser.id,
-          staff: databaseUser.staff
+          cpf: patient.cpf,
+          email: patient.email,
+          name: patient.name,
+          phone: patient.phone,
+          id: patient.id,
+          password: patient.cpf
         })
 
         const appointment = Appointment.create({
           user,
+          appointmentType,
+          comments,
           dateTime
         })
 
         const appointmentId = await this.appointmentRepository.save(appointment)
 
-        if (databaseUser.email) {
+        if (patient.email) {
           const dateLessFiveDays = dayjs(dateTime).subtract(5, "day")
 
           const difference = dayjs(dateLessFiveDays).diff(dayjs())
@@ -57,7 +56,7 @@ class CreateAppointmentUseCase {
           const confirmationLink = `${process.env.SERVER_URL}/appointment/${confirmationToken}`
 
           this.confirmationProvider.execute({
-            userId: databaseUser.id,
+            userId: user.id,
             jobName: "appointmentConfirmation",
             confirmationLink,
             confirmationToken,
@@ -65,8 +64,8 @@ class CreateAppointmentUseCase {
               subject: "Confirmação de consulta",
               text: `Para confimar sua consulta clique aqui: ${confirmationLink}`,
               to: {
-                name: databaseUser.name,
-                address: databaseUser.email
+                name: user.Name.value,
+                address: user.Email.value
               },
               delay: difference
             },

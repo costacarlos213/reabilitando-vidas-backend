@@ -6,6 +6,8 @@ class Appointment {
   private constructor(
     public readonly User: User,
     public readonly Datetime: DateTime,
+    public readonly Comments?: string,
+    public readonly AppointmentType?: string,
     public readonly Confirmed: boolean = false
   ) {}
 
@@ -16,7 +18,13 @@ class Appointment {
 
     const datetime = datetimeOrError.value
 
-    return new Appointment(appointmentData.user, datetime)
+    const { user, comments, appointmentType } = appointmentData
+
+    if (appointmentType?.length > 250) {
+      throw new Error("Too long appointment type.")
+    }
+
+    return new Appointment(user, datetime, comments, appointmentType)
   }
 }
 

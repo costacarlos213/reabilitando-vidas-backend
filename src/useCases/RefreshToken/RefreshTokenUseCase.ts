@@ -1,4 +1,3 @@
-import { verify } from "jsonwebtoken"
 import { AccessTokenProvider } from "@providers/token/generateAccessToken"
 import { IRefreshTokenDTO } from "./RefreshTokenDTO"
 import { ITokenRepository } from "@repositories/tokenRepository/ITokenRepository"
@@ -7,24 +6,13 @@ class RefreshTokenUseCase {
   constructor(private tokenRepository: ITokenRepository) {}
 
   async execute(userData: IRefreshTokenDTO): Promise<string> {
-    const { userId, refreshToken, token } = userData
+    const { userId, refreshToken } = userData
 
-    if (!userId || !token || !refreshToken) {
+    if (!userId || !refreshToken) {
       throw new Error("Missing token or userId.")
     }
 
-    const decoded = await verify(token, process.env.JWT_AUTH_SECRET)
-
-    if (decoded.sub !== userId) {
-      throw new Error("Wrong refresh token")
-    }
-
     const accessToken = AccessTokenProvider(userId)
-
-    this.tokenRepository.set({
-      key: "BL_" + userId,
-      value: JSON.stringify({ token: token })
-    })
 
     return accessToken
   }

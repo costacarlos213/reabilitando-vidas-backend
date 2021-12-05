@@ -7,13 +7,14 @@ class GetAppointmentByDateController {
   ) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
-    const { initialDate, finalDate, userData } = req.body
+    const { initialDate, finalDate } = req.query
+    const { userData } = req.body
 
     try {
       const appointments = await this.getAppointmentByDateUseCase.execute(
         {
-          initialDate,
-          finalDate
+          initialDate: initialDate?.toString(),
+          finalDate: finalDate?.toString()
         },
         userData.sub
       )

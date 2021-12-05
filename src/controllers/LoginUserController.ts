@@ -5,26 +5,29 @@ class LoginUserController {
   constructor(private loginUser: LoginUserUseCase) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
-    const login = req.body.login
-    const password = req.body.password
+    const { login, password } = req.body
 
     try {
-      const token = await this.loginUser.execute({
+      const tokens = await this.loginUser.execute({
         login,
         password
       })
 
-      if (token instanceof Error) {
-        return res.status(400).json({
-          message: token.message
-        })
-      }
+      res.cookie("vidas.access-token", tokens.accessToken, {
+        path: "/",
+        maxAge: 30 * 1000 // 30s
+      })
 
-      return res.status(200).json(token)
+      res.cookie("JID", tokens.refreshToken, {
+        path: "/",
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 30 // 1 month
+      })
+
+      return res.status(200).json(tokens)
     } catch (err) {
-      return res.status(500).json({
-        message: "The application has encountered an error.",
-        error: err.message
+      return res.status(400).json({
+        message: err.message
       })
     }
   }

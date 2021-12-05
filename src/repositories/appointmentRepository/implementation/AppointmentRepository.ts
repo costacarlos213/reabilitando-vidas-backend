@@ -1,10 +1,10 @@
 import { Appointment } from "@entities/Appointment/Appointment"
 import { prisma } from "../../../database/client"
-import { Appointment as dbAppointment } from "@prisma/client"
 import {
   dayAppointments,
   IAppointmentRepository
 } from "../IAppointmentRepository"
+import { IFilters } from "@useCases/indexAppointments/IndexAppointmentsDTO"
 
 class AppointmentRepository implements IAppointmentRepository {
   async updateAppointment(
@@ -19,8 +19,39 @@ class AppointmentRepository implements IAppointmentRepository {
     })
   }
 
-  async indexAppointments(): Promise<dbAppointment[]> {
-    const appointments = await prisma.appointment.findMany()
+  async indexAppointments(filters: IFilters): Promise<dayAppointments[]> {
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        id: { equals: parseInt(filters?.id) || undefined },
+        user: {
+          cpf: {
+            equals: filters?.patientCpf
+          }
+        },
+        AND: [
+          { user: { name: { contains: filters?.patientName } } },
+          {
+            dateTime: {
+              gte: filters?.initialDateTime,
+              lte: `${filters?.finalDateTime}T23:59:59`
+            }
+          }
+        ]
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            cpf: true,
+            email: true,
+            phone: true
+          }
+        }
+      },
+      orderBy: {
+        dateTime: "asc"
+      }
+    })
 
     return appointments
   }
@@ -64,7 +95,25 @@ class AppointmentRepository implements IAppointmentRepository {
     const dbAppointment = await prisma.appointment.create({
       data: {
         dateTime: Datetime.value,
-        userId: User.id
+        comments: appointment.Comments,
+        appointmentType: appointment.AppointmentType,
+        user: {
+          connectOrCreate: {
+            where: {
+              cpf: User.cpf.value
+            },
+            create: {
+              id: User.id,
+              cpf: User.cpf.value,
+              name: User.Name.value,
+              password: User.Password,
+              email: User.Email.value,
+              phone: User.Phone.value,
+              staff: User.Staff,
+              firstLogin: true
+            }
+          }
+        }
       }
     })
 

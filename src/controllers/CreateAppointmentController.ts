@@ -5,12 +5,30 @@ class CreateAppointmentController {
   constructor(private createAppointmentUseCase: CreateAppointmentUseCase) {}
 
   async handler(req: Request, res: Response): Promise<Response> {
-    const { cpf, dateTime, userData } = req.body
+    const {
+      appointmentType,
+      comments,
+      cpf,
+      id,
+      email,
+      name,
+      phone,
+      dateTime,
+      userData
+    } = req.body
 
     try {
       const AppointmentUseCaseResponse =
         await this.createAppointmentUseCase.execute({
-          cpf,
+          patient: {
+            cpf,
+            email,
+            id,
+            name,
+            phone
+          },
+          appointmentType,
+          comments,
           userId: userData.sub,
           dateTime
         })

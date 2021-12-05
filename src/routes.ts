@@ -4,11 +4,13 @@ import { appointmentConfirmationController } from "./main/appointmentConfirmatio
 import { createAppointmentController } from "./main/createAppointment"
 import { createUserController } from "./main/createUser"
 import { getAppointmentsByDayController } from "./main/getAppointmentsByDay"
+import { getUserByCPFController } from "./main/getUserByCPF"
 import { indexAppointmentsController } from "./main/indexAppointments"
 import { loginUserController } from "./main/loginUser"
 import { logoutController } from "./main/logout"
 import { passwordResetController } from "./main/passwordReset"
 import { refreshTokenController } from "./main/refreshToken"
+import { updateAppointmentController } from "./main/updateAppointment"
 import { verifyRefreshToken } from "./middlewares/verifyRefreshToken"
 import { verifyToken } from "./middlewares/verifyToken"
 
@@ -17,6 +19,10 @@ const router = Router()
 // User account routes
 router.post("/user", async (req, res) => {
   return await createUserController.handle(req, res)
+})
+
+router.get("/user", async (req, res) => {
+  return await getUserByCPFController.handle(req, res)
 })
 
 router.get("/confirmation/:token", async (req, res) => {
@@ -59,6 +65,10 @@ router.get("/appointment", verifyToken, async (req, res) => {
 
 router.get("/appointment/:token", async (req, res) => {
   return await appointmentConfirmationController.handle(req, res)
+})
+
+router.put("/appointment", async (req, res) => {
+  return await updateAppointmentController.handle(req, res)
 })
 
 export { router }

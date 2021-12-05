@@ -11,36 +11,30 @@ class LoginUserUseCase {
     private tokenRepository: ITokenRepository
   ) {}
 
-  async execute(
-    userAccessData: ILoginUserDTO
-  ): Promise<ILoginUserResponse | Error> {
-    try {
-      const user = await this.userRepository.getUserByLoginOptions(
-        userAccessData.login
-      )
+  async execute(userAccessData: ILoginUserDTO): Promise<ILoginUserResponse> {
+    const user = await this.userRepository.getUserByLoginOptions(
+      userAccessData.login
+    )
 
-      if (!user) throw new Error("Wrong credentials.")
+    if (!user) throw new Error("Wrong credentials.")
 
-      const isPasswordValid = await compare(
-        userAccessData.password,
-        user.password
-      )
+    const isPasswordValid = await compare(
+      userAccessData.password,
+      user.password
+    )
 
-      if (!isPasswordValid) throw new Error("Wrong credentials.")
-      if (user.status === "PENDING") throw new Error("Confirm your account.")
+    if (!isPasswordValid) throw new Error("Wrong credentials.")
+    if (user.status === "PENDING") throw new Error("Confirm your account.")
 
-      const accessToken = AccessTokenProvider(user.id)
-      const refreshToken = RefreshTokenProvider(user.id)
+    const accessToken = AccessTokenProvider(user.id)
+    const refreshToken = RefreshTokenProvider(user.id)
 
-      this.tokenRepository.set({
-        key: user.id,
-        value: JSON.stringify({ token: refreshToken })
-      })
+    this.tokenRepository.set({
+      key: user.id,
+      value: JSON.stringify({ token: refreshToken })
+    })
 
-      return { accessToken, refreshToken, firstLogin: user.firstLogin }
-    } catch (error) {
-      return error
-    }
+    return { accessToken, refreshToken, firstLogin: user.firstLogin }
   }
 }
 

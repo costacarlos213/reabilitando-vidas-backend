@@ -10,11 +10,19 @@ export async function verifyToken(
   try {
     const authToken = req.headers.authorization
 
-    if (!authToken) throw new Error("Token is missing")
+    if (!authToken) {
+      return res.status(401).json({
+        message: "Invalid Session",
+        data: "Missing access token"
+      })
+    }
 
     const token = req.headers.authorization.split(" ")[1]
 
-    const decoded = verify(token, process.env.JWT_AUTH_SECRET)
+    const decoded = (await verify(
+      token.trim(),
+      process.env.JWT_AUTH_SECRET
+    )) as { sub: string }
 
     req.body = {
       ...req.body,
@@ -28,9 +36,7 @@ export async function verifyToken(
       "BL_" + decoded.sub.toString()
     )
 
-    if (!blacklistedToken) {
-      next()
-    } else {
+    if (blacklistedToken) {
       if (JSON.parse(blacklistedToken).token === token) {
         return res
           .status(401)

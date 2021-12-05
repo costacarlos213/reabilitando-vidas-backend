@@ -8,22 +8,21 @@ class IndexAppointmentsController {
     const { userData } = req.body
 
     try {
-      const appointments = await this.indexAppointmentsUseCase.execute(
-        userData.sub
-      )
-
-      if (appointments instanceof Error) {
-        return res.status(400).json({
-          message: appointments.message
-        })
-      }
+      const appointments = await this.indexAppointmentsUseCase.execute({
+        userId: userData.sub,
+        filters: {
+          ...req.query,
+          id: parseInt(req.query?.id?.toString())
+        }
+      })
 
       return res.status(200).json({
         appointments
       })
     } catch (err) {
-      return res.status(500).json({
-        message: "The application has encountered an error.",
+      console.log(err)
+
+      return res.status(400).json({
         error: err.message
       })
     }
