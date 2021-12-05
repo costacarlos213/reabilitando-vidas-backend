@@ -6,10 +6,11 @@ import { IUserRepository } from "@repositories/userRepository/IUserRepository"
 import { NonStaffUserError } from "@useCases/errors/NonStaffUserError"
 import { ICreateAppointmentDTO } from "./CreateAppointmentDTO"
 import dayjs from "dayjs"
-import duration from "dayjs/plugin/duration"
+import utc from "dayjs/plugin/utc"
+
 import { IConfirmationProvider } from "@providers/confirmation/IConfirmation"
 
-dayjs.extend(duration)
+dayjs.extend(utc)
 
 class CreateAppointmentUseCase {
   constructor(
@@ -47,15 +48,15 @@ class CreateAppointmentUseCase {
         const appointmentId = await this.appointmentRepository.save(appointment)
 
         if (patient.email) {
-          const dateLessFiveDays = dayjs(dateTime).subtract(5, "day")
+          const dateLessFiveDays = dayjs.utc(dateTime).subtract(5, "day")
 
-          const difference = dayjs(dateLessFiveDays).diff(dayjs())
+          const difference = dayjs(dateLessFiveDays).diff(dayjs.utc())
 
           const confirmationToken = ConfirmationLinkProvider()
 
           const confirmationLink = `${process.env.SERVER_URL}/appointment/${confirmationToken}`
 
-          this.confirmationProvider.execute({
+          const jobId = await this.confirmationProvider.execute({
             userId: user.id,
             jobName: "appointmentConfirmation",
             confirmationLink,
@@ -72,9 +73,16 @@ class CreateAppointmentUseCase {
             token: {
               key: `APT_CMT_${confirmationToken}_${appointmentId}`,
               value: JSON.stringify({ appointmentId }),
-              expiration: dayjs.duration(dateTime).asSeconds()
+              expiration: dayjs.utc(dateTime).diff(dayjs.utc(), "second")
             }
           })
+
+          await this.appointmentRepository.updateAppointment(
+            {
+              taskId: jobId
+            },
+            parseInt(appointmentId)
+          )
         }
 
         return null

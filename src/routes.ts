@@ -3,6 +3,7 @@ import { accountConfirmationController } from "./main/accountConfirmation"
 import { appointmentConfirmationController } from "./main/appointmentConfirmation"
 import { createAppointmentController } from "./main/createAppointment"
 import { createUserController } from "./main/createUser"
+import { deleteAppointmentController } from "./main/deleteAppointment"
 import { getAppointmentsByDayController } from "./main/getAppointmentsByDay"
 import { getUserByCPFController } from "./main/getUserByCPF"
 import { indexAppointmentsController } from "./main/indexAppointments"
@@ -67,8 +68,12 @@ router.get("/appointment/:token", async (req, res) => {
   return await appointmentConfirmationController.handle(req, res)
 })
 
-router.put("/appointment", async (req, res) => {
+router.put("/appointment", verifyToken, async (req, res) => {
   return await updateAppointmentController.handle(req, res)
+})
+
+router.delete("/appointment", async (req, res) => {
+  return await deleteAppointmentController.handle(req, res)
 })
 
 export { router }

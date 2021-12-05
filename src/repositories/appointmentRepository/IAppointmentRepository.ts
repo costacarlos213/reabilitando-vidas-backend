@@ -22,4 +22,5 @@ export interface IAppointmentRepository {
     field: Record<string, unknown>,
     appointmentId: number
   ): Promise<void>
+  deleteAppointment(appointmentId: number): Promise<void>
 }

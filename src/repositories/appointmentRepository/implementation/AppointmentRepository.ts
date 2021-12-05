@@ -7,6 +7,14 @@ import {
 import { IFilters } from "@useCases/indexAppointments/IndexAppointmentsDTO"
 
 class AppointmentRepository implements IAppointmentRepository {
+  async deleteAppointment(appointmentId: number): Promise<void> {
+    await prisma.appointment.delete({
+      where: {
+        id: appointmentId
+      }
+    })
+  }
+
   async updateAppointment(
     field: Record<string, unknown>,
     appointmentId: number

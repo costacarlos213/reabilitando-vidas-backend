@@ -19,5 +19,6 @@ export interface ISendEmailData {
 }
 
 export interface IMailProvider {
-  sendEmail(sendEmailOptions: ISendEmailData): Promise<void>
+  sendEmail(sendEmailOptions: ISendEmailData): Promise<string>
+  abortJob(jobId: string): Promise<void>
 }

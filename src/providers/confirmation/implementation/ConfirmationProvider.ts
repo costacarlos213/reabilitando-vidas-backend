@@ -8,12 +8,12 @@ class ConfirmationProvider implements IConfirmationProvider {
     private mailProvider: IMailProvider
   ) {}
 
-  async execute(confirmationData: IConfirmationDTO): Promise<void> {
+  async execute(confirmationData: IConfirmationDTO): Promise<string> {
     this.tokenRepository.set(confirmationData.token)
 
     console.log(confirmationData.confirmationLink)
 
-    this.mailProvider.sendEmail({
+    const jobId = await this.mailProvider.sendEmail({
       jobName: confirmationData.jobName,
       email: {
         from: {
@@ -28,6 +28,8 @@ class ConfirmationProvider implements IConfirmationProvider {
         delay: confirmationData.email.delay
       }
     })
+
+    return jobId
   }
 }
 

@@ -15,12 +15,18 @@ class MailProvider implements IMailProvider {
     })
   }
 
-  async sendEmail(sendMailOptions: ISendEmailData): Promise<void> {
-    await this.queue.add(
+  async sendEmail(sendMailOptions: ISendEmailData): Promise<string> {
+    const job = await this.queue.add(
       sendMailOptions.jobName,
       sendMailOptions.email,
       sendMailOptions.jobOptions
     )
+
+    return job.id
+  }
+
+  async abortJob(jobId: string): Promise<void> {
+    this.queue.remove(jobId)
   }
 
   close(): Promise<void> {

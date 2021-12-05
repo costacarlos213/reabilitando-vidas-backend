@@ -28,6 +28,7 @@ model Appointment {
   dateTime        String
   comments        String?
   appointmentType String?
+  taskId          String?
   confirmed       Boolean @default(false)
   userId          String
   user            User    @relation(fields: [userId], references: [id])

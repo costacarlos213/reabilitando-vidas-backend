@@ -20,5 +20,5 @@ export interface IConfirmationDTO {
 }
 
 export interface IConfirmationProvider {
-  execute(confirmationData: IConfirmationDTO): Promise<void>
+  execute(confirmationData: IConfirmationDTO): Promise<string>
 }
