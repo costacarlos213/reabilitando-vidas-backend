@@ -14,7 +14,7 @@ export function generatePasswordResetTokenEmail(token: string): string {
           <h3 style="font-family: &quot;Roboto&quot;, sans-serif;text-align: center;margin-right: 10px;margin-left: 10px;"> Segue código de autenticação. </h3>
           
           <div class="cod" style="font-family: &quot;Roboto&quot;, sans-serif;">
-              <p style="font-family: &quot;Roboto&quot;, sans-serif;border: solid 2px;margin: 0 auto;border-color: #E22454;border-radius: 10px;width: 10vw;padding: 15px 20px;height: auto;text-align: center;color: #E22454;font-weight: 700;"> ${token} </p>
+              <p style="font-family: &quot;Roboto&quot;, sans-serif;border: solid 2px;margin: 0 auto;border-color: #E22454;border-radius: 10px;width: min-content;padding: 15px 20px;height: auto;text-align: center;color: #E22454;font-weight: 700;"> ${token} </p>
           </div>
           <h3 style="font-family: &quot;Roboto&quot;, sans-serif;text-align: center;margin-right: 10px;margin-left: 10px;"> Retorne ao website e insira o código acima para redefinir sua senha. </h3>
       </section>

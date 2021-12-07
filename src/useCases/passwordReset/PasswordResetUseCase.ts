@@ -5,8 +5,8 @@ import { IUserRepository } from "@repositories/userRepository/IUserRepository"
 import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
 import { IPasswordResetDTO } from "./PasswordResetDTO"
 import bcrypt from "bcrypt"
-import { generatePasswordResetTokenEmail } from "src/utils/PasswordResetTokenTemplateProvider"
-import { generateResetedPasswordEmail } from "src/utils/ResetedPasswordTemplate"
+import { generatePasswordResetTokenEmail } from "../../utils/PasswordResetTokenTemplateProvider"
+import { generateResetedPasswordEmail } from "../../utils/ResetedPasswordTemplate"
 
 class PasswordResetUseCase {
   constructor(
@@ -61,9 +61,11 @@ class PasswordResetUseCase {
         JSON.parse(userId).userId
       )
 
-      await this.tokenRepository.deleleteByPattern(`RST_${token}_`)
+      const user = await this.userRepository.getUniqueUser({
+        id: JSON.parse(userId).userId
+      })
 
-      const user = await this.userRepository.getUniqueUser({ id: userId })
+      await this.tokenRepository.deleleteByPattern(`RST_${token}_`)
 
       this.mailProvider.sendEmail({
         jobName: "passwordReset",
