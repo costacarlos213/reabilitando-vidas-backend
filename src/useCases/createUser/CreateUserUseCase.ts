@@ -60,7 +60,7 @@ class CreateUserUseCase {
           jobName: "accountConfirmation",
           email: {
             subject: "Confirmação de email",
-            text: `Para confirmar a conta clique no link: ${confirmationLink}`,
+            html: `Para confirmar a conta clique no link: ${confirmationLink}`,
             to: {
               name: name,
               address: email

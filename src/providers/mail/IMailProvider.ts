@@ -9,7 +9,7 @@ export interface IEmail {
   to: IAddress
   from: IAddress
   subject: string
-  text: string
+  html: string
 }
 
 export interface ISendEmailData {

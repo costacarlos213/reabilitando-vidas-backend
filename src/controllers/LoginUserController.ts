@@ -15,18 +15,20 @@ class LoginUserController {
 
       res.cookie("vidas.access-token", tokens.accessToken, {
         path: "/",
+        sameSite: "lax",
         maxAge: 30 * 1000 // 30s
       })
 
       res.cookie("JID", tokens.refreshToken, {
         path: "/",
         httpOnly: true,
+        sameSite: "lax",
         maxAge: 1000 * 60 * 60 * 24 * 30 // 1 month
       })
 
       return res.status(200).json(tokens)
     } catch (err) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: err.message
       })
     }

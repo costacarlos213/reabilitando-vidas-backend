@@ -7,7 +7,7 @@ class PasswordResetController {
 
   async handleRequest(req: Request, res: Response): Promise<Response> {
     try {
-      await this.passwordResetUseCase.executeRequest(req.body.email)
+      await this.passwordResetUseCase.executeRequest(req.query.email.toString())
 
       return res.status(200).json({
         message:

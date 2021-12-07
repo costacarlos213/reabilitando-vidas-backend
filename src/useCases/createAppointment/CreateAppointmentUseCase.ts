@@ -1,3 +1,7 @@
+import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
+import bcrypt from "bcrypt"
+
 import { Appointment } from "@entities/Appointment/Appointment"
 import { User } from "@entities/User/User"
 import { ConfirmationLinkProvider } from "@providers/token/generateConfirmationToken"
@@ -5,10 +9,9 @@ import { IAppointmentRepository } from "@repositories/appointmentRepository/IApp
 import { IUserRepository } from "@repositories/userRepository/IUserRepository"
 import { NonStaffUserError } from "@useCases/errors/NonStaffUserError"
 import { ICreateAppointmentDTO } from "./CreateAppointmentDTO"
-import dayjs from "dayjs"
-import utc from "dayjs/plugin/utc"
 
 import { IConfirmationProvider } from "@providers/confirmation/IConfirmation"
+import { generateAppointmentConfirmationEmail } from "../../utils/ConfirmAppointmentTemplateProvider"
 
 dayjs.extend(utc)
 
@@ -29,13 +32,15 @@ class CreateAppointmentUseCase {
 
     if (staffUser.staff) {
       try {
+        const hashPassword = await bcrypt.hash(patient.cpf, 8)
+
         const user = User.create({
           cpf: patient.cpf,
           email: patient.email,
           name: patient.name,
           phone: patient.phone,
           id: patient.id,
-          password: patient.cpf
+          password: hashPassword
         })
 
         const appointment = Appointment.create({
@@ -63,7 +68,7 @@ class CreateAppointmentUseCase {
             confirmationToken,
             email: {
               subject: "Confirmação de consulta",
-              text: `Para confimar sua consulta clique aqui: ${confirmationLink}`,
+              html: generateAppointmentConfirmationEmail(confirmationLink),
               to: {
                 name: user.Name.value,
                 address: user.Email.value
@@ -79,7 +84,8 @@ class CreateAppointmentUseCase {
 
           await this.appointmentRepository.updateAppointment(
             {
-              taskId: jobId
+              taskId: jobId,
+              confirmationCode: confirmationToken
             },
             parseInt(appointmentId)
           )

@@ -5,7 +5,7 @@ interface IEmail {
     name: string
     address: string
   }
-  text: string
+  html: string
   subject: string
   delay?: number
 }

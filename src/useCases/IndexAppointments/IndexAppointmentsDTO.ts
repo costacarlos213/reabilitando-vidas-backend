@@ -1,5 +1,6 @@
 export interface IFilters {
-  id?: string
+  id?: number
+  patientId?: string
   patientName?: string
   patientCpf?: string
   initialDateTime?: string
@@ -7,6 +8,7 @@ export interface IFilters {
 }
 
 export interface IIndexAppointmentsDTO {
-  userId
+  userId: string
+  staff: boolean
   filters: IFilters
 }

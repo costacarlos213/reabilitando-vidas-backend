@@ -7,6 +7,7 @@ export type logedUser = {
   firstLogin: boolean
   id: string
   status: Status
+  staff: boolean
 }
 
 type Cpf = {

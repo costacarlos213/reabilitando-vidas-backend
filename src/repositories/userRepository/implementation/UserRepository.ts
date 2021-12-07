@@ -47,6 +47,7 @@ class UserRepository implements IUserRepository {
         firstLogin: true,
         status: true,
         name: true,
+        staff: true,
         email: true
       }
     })

@@ -21,7 +21,7 @@ class ConfirmationProvider implements IConfirmationProvider {
           address: "reabilitandovidas@email.com"
         },
         to: confirmationData.email.to,
-        text: confirmationData.email.text,
+        html: confirmationData.email.html,
         subject: confirmationData.email.subject
       },
       jobOptions: {

@@ -8,6 +8,7 @@ class RefreshTokenController {
     try {
       const accessToken = await this.refreshTokenUseCase.execute({
         userId: req.body.userData.sub,
+        staff: req.body.userData.staff,
         refreshToken: req.body.refreshToken
       })
 

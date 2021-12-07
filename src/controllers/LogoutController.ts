@@ -11,6 +11,9 @@ class LogoutController {
         userId: req.body.userData.sub
       })
 
+      res.clearCookie("JID")
+      res.clearCookie("vidas.access-token")
+
       return res.status(200).json()
     } catch (error) {
       return res.status(500).json({

@@ -30,11 +30,10 @@ class AppointmentRepository implements IAppointmentRepository {
   async indexAppointments(filters: IFilters): Promise<dayAppointments[]> {
     const appointments = await prisma.appointment.findMany({
       where: {
-        id: { equals: parseInt(filters?.id) || undefined },
+        id: { equals: filters.id || undefined },
         user: {
-          cpf: {
-            equals: filters?.patientCpf
-          }
+          cpf: { equals: filters?.patientCpf },
+          id: { equals: filters?.patientId }
         },
         AND: [
           { user: { name: { contains: filters?.patientName } } },

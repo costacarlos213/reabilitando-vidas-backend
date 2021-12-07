@@ -10,6 +10,7 @@ class IndexAppointmentsController {
     try {
       const appointments = await this.indexAppointmentsUseCase.execute({
         userId: userData.sub,
+        staff: userData.staff,
         filters: {
           ...req.query,
           id: parseInt(req.query?.id?.toString())

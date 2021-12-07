@@ -24,17 +24,21 @@ class LoginUserUseCase {
     )
 
     if (!isPasswordValid) throw new Error("Wrong credentials.")
-    if (user.status === "PENDING") throw new Error("Confirm your account.")
+    // if (user.status === "PENDING") throw new Error("Confirm your account.")
 
-    const accessToken = AccessTokenProvider(user.id)
-    const refreshToken = RefreshTokenProvider(user.id)
+    const accessToken = AccessTokenProvider(user.id, user.staff)
+    const refreshToken = RefreshTokenProvider(user.id, user.staff)
 
     this.tokenRepository.set({
       key: user.id,
       value: JSON.stringify({ token: refreshToken })
     })
 
-    return { accessToken, refreshToken, firstLogin: user.firstLogin }
+    return {
+      accessToken,
+      refreshToken,
+      firstLogin: user.firstLogin
+    }
   }
 }
 

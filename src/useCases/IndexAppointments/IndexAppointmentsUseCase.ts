@@ -1,7 +1,6 @@
 import { Appointment } from "@prisma/client"
 import { IAppointmentRepository } from "@repositories/appointmentRepository/IAppointmentRepository"
 import { IUserRepository } from "@repositories/userRepository/IUserRepository"
-import { NonStaffUserError } from "@useCases/errors/NonStaffUserError"
 import { IIndexAppointmentsDTO } from "./IndexAppointmentsDTO"
 
 class IndexAppointmentsUseCase {
@@ -12,20 +11,21 @@ class IndexAppointmentsUseCase {
 
   async execute({
     filters,
+    staff,
     userId
   }: IIndexAppointmentsDTO): Promise<Appointment[]> {
-    const staffUser = await this.userRepository.getUniqueUser({
-      id: userId
-    })
-
-    if (staffUser.staff) {
+    if (staff) {
       const appointments = await this.appointmentRepository.indexAppointments(
         filters
       )
 
       return appointments
     } else {
-      throw new NonStaffUserError()
+      const appointments = await this.appointmentRepository.indexAppointments({
+        patientId: userId
+      })
+
+      return appointments
     }
   }
 }

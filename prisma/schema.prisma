@@ -24,14 +24,15 @@ model User {
 }
 
 model Appointment {
-  id              Int     @id @default(autoincrement())
-  dateTime        String
-  comments        String?
-  appointmentType String?
-  taskId          String?
-  confirmed       Boolean @default(false)
-  userId          String
-  user            User    @relation(fields: [userId], references: [id])
+  id               Int     @id @default(autoincrement())
+  dateTime         String
+  comments         String?
+  appointmentType  String?
+  taskId           String?
+  confirmationCode String?
+  confirmed        Boolean @default(false)
+  userId           String
+  user             User    @relation(fields: [userId], references: [id])
 }
 
 enum Status {

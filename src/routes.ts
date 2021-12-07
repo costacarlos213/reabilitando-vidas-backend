@@ -43,7 +43,7 @@ router.post("/auth/login", async (req, res) => {
   return await loginUserController.handler(req, res)
 })
 
-router.get("/auth/logout", verifyToken, async (req, res) => {
+router.delete("/auth/logout", verifyToken, async (req, res) => {
   return await logoutController.handle(req, res)
 })
 
@@ -72,7 +72,7 @@ router.put("/appointment", verifyToken, async (req, res) => {
   return await updateAppointmentController.handle(req, res)
 })
 
-router.delete("/appointment", async (req, res) => {
+router.delete("/appointment", verifyToken, async (req, res) => {
   return await deleteAppointmentController.handle(req, res)
 })
 

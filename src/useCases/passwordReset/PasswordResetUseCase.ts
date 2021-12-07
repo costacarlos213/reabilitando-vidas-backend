@@ -5,6 +5,8 @@ import { IUserRepository } from "@repositories/userRepository/IUserRepository"
 import { UserDoNotExistsError } from "@useCases/errors/UserDoNotExistsError"
 import { IPasswordResetDTO } from "./PasswordResetDTO"
 import bcrypt from "bcrypt"
+import { generatePasswordResetTokenEmail } from "src/utils/PasswordResetTokenTemplateProvider"
+import { generateResetedPasswordEmail } from "src/utils/ResetedPasswordTemplate"
 
 class PasswordResetUseCase {
   constructor(
@@ -23,7 +25,7 @@ class PasswordResetUseCase {
 
     console.log(resetToken)
 
-    this.tokenRepository.set({
+    await this.tokenRepository.set({
       key: `RST_${resetToken}_${user.id}`,
       value: JSON.stringify({ userId: user.id }),
       expiration: 60 * 60 * 12
@@ -40,7 +42,7 @@ class PasswordResetUseCase {
           name: user.name,
           address: user.email
         },
-        text: `Para redefinir sua senha, use o código: ${resetToken}`,
+        html: generatePasswordResetTokenEmail(resetToken),
         subject: "Redefinição de senha"
       }
     })
@@ -60,6 +62,24 @@ class PasswordResetUseCase {
       )
 
       await this.tokenRepository.deleleteByPattern(`RST_${token}_`)
+
+      const user = await this.userRepository.getUniqueUser({ id: userId })
+
+      this.mailProvider.sendEmail({
+        jobName: "passwordReset",
+        email: {
+          from: {
+            name: "Reabilitando vidas",
+            address: "reabilitandovidas@email.com"
+          },
+          to: {
+            name: user.name,
+            address: user.email
+          },
+          html: generateResetedPasswordEmail(),
+          subject: "Redefinição de senha"
+        }
+      })
     } else {
       throw new Error("Invalid password reset link")
     }
